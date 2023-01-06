@@ -28,7 +28,7 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2022.3"
+val clionVersion = "2022.3.1"
 val isLocal: B = ops.StringOps(home.string).startsWith(Os.home.canon.string) && (homeBin / "distro.cmd").exists
 val settingsDir: String = if (isLocal) if (Os.isWin) ops.StringOps((home / ".settings").string).replaceAllChars('\\', '/') else (home / ".settings").string else "${user.home}"
 
