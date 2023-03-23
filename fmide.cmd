@@ -56,7 +56,7 @@ import Cli._
           |
           |Available Options:
           |    --awas               AWAS version (expects a string; default is
-          |                           "1.2022.08221314.0e4052e")
+          |                           "1.2023.03231646.2bf1dca")
           |    --agree              AGREE version (expects a string; default is
           |                           "agree_2.9.1")
           |    --briefcase          BriefCASE version (expects a string; default is
@@ -64,9 +64,9 @@ import Cli._
           |    --eclipse            Eclipse release version (expects a string; default is
           |                           "2021-03")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
-          |                           "1.2022.11022102.e599639")
+          |                           "1.2023.03231646.2bf1dca")
           |    --hamr               Sireum HAMR version (expects a string; default is
-          |                           "1.2022.08221314.0e4052e")
+          |                           "1.2023.03231646.2bf1dca")
           |    --osate              OSATE version (expects a string; default is
           |                           "2.10.2-vfinal")
           |    --resolute           Resolute version (expects a string; default is
@@ -80,12 +80,12 @@ import Cli._
           |-v, --verbose            Verbose output
           |    --verbose+           Increased verbose output""".render
 
-    var awas: Option[String] = Some("1.2022.08221314.0e4052e")
+    var awas: Option[String] = Some("1.2023.03231646.2bf1dca")
     var agree: Option[String] = Some("agree_2.9.1")
     var briefcase: Option[String] = Some("briefcase_0.8.0")
     var eclipse: Option[String] = Some("2021-03")
-    var gumbo: Option[String] = Some("1.2022.11022102.e599639")
-    var hamr: Option[String] = Some("1.2022.08221314.0e4052e")
+    var gumbo: Option[String] = Some("1.2023.03231646.2bf1dca")
+    var hamr: Option[String] = Some("1.2023.03231646.2bf1dca")
     var osate: Option[String] = Some("2.10.2-vfinal")
     var resolute: Option[String] = Some("resolute_3.0.0")
     var existingInstall: Option[String] = None[String]()
@@ -355,7 +355,6 @@ import Cli._
 // BEGIN USER CODE
 val homeBin = Os.slashDir.up.canon
 val sireum = homeBin / (if (Os.isWin) "sireum.bat" else "sireum")
-
 def parseCliArgs(): (B, Cli.FmideOption) = {
   Cli(Os.pathSepChar).parseFmide(Os.cliArgs, 0) match {
     case Some(o: Cli.FmideOption) if o.args.size == 1 && (o.args(0) == "release" || o.args(0) == "latest" || o.args(0) == "fixed") =>
@@ -374,9 +373,7 @@ def parseCliArgs(): (B, Cli.FmideOption) = {
   Os.exit(-1)
   halt("Infeasible")
 }
-
 val (isRelease, option) = parseCliArgs()
-
 def lookupVersion(name: String, url: String, default: String): String = {
   val compositeArtifacts = "compositeArtifacts.xml"
   def lookupVersionH(): String = {
@@ -426,22 +423,17 @@ def lookupVersion(name: String, url: String, default: String): String = {
   val r = lookupVersionH()
   return r
 }
-
 val eclipseVersion = option.eclipse.get
 val osateVersion = option.osate.get
-
 val agreeId = "com.rockwellcollins.atc.agree.feature.feature.group"
 val agreeUrl = "http://ca-trustedsystems-dev-us-east-1.s3-website-us-east-1.amazonaws.com/p2/snapshots/agree/,https://raw.githubusercontent.com/loonwerks/AGREE-Updates/master"
 val agreeVersion = lookupVersion("AGREE", agreeUrl, option.agree.get)
-
 val resoluteId = "com.rockwellcollins.atc.resolute.feature.feature.group"
 val resoluteUrl = "http://ca-trustedsystems-dev-us-east-1.s3-website-us-east-1.amazonaws.com/p2/snapshots/resolute/,https://raw.githubusercontent.com/loonwerks/Resolute-Updates/master"
 val resoluteVersion = lookupVersion("Resolute", resoluteUrl, option.resolute.get)
-
 val briefCaseId = "com.collins.trustedsystems.briefcase.feature.feature.group"
 val briefCaseUrl = s"https://download.eclipse.org/releases/$eclipseVersion,http://ca-trustedsystems-dev-us-east-1.s3-website-us-east-1.amazonaws.com/p2/snapshots/briefcase/,https://raw.githubusercontent.com/loonwerks/BriefCASE-Updates/master"
 val briefCaseVersion = lookupVersion("BriefCASE", briefCaseUrl, option.briefcase.get)
-
 val awasId = "org.sireum.aadl.osate.awas.feature.feature.group"
 val hamrCliId = "org.sireum.aadl.osate.cli.feature.feature.group"
 val hamrId = "org.sireum.aadl.osate.hamr.feature.feature.group"
@@ -449,12 +441,10 @@ val sireumId = "org.sireum.aadl.osate.feature.feature.group"
 val sireumUrl = "https://raw.githubusercontent.com/sireum/osate-update-site/master"
 val hamrVersion: String = lookupVersion("HAMR", sireumUrl, option.hamr.get)
 val awasVersion: String = lookupVersion("AWAS", sireumUrl, option.awas.get)
-
 val gumboId = "org.sireum.aadl.gumbo.feature.feature.group"
 val gumbo2AirId = "org.sireum.aadl.osate.gumbo2air.feature.feature.group"
 val gumboUrl = "https://raw.githubusercontent.com/sireum/aadl-gumbo-update-site/master"
 val gumboVersion: String = lookupVersion("GUMBO", gumboUrl, option.gumbo.get)
-
 val featuresT: ISZ[String] = ISZ[(String,String,String)](
   (gumbo2AirId, gumboVersion, gumboUrl),
   (hamrCliId, hamrVersion, sireumUrl),
@@ -469,10 +459,7 @@ val featuresT: ISZ[String] = ISZ[(String,String,String)](
   val version: String = if(xops.contains("_")) xops.substring(xops.indexOf('_') + 1, xops.size) else xops.s
   s"${m._1}/${version}=${m._3}"
 })
-
 val features = st"${(featuresT, ";")}".render
-
-
 val fmideDir: Os.Path =
   if(option.existingInstall.nonEmpty) {
     val path = Os.path(option.existingInstall.get)
@@ -495,14 +482,11 @@ val fmideDir: Os.Path =
         halt("Infeasible")
     }
   }
-
 var verContent = s"eclipse=$eclipseVersion;$features"
 if(option.existingInstall.isEmpty) {
   verContent = s"osate = $osateVersion;$verContent"
 }
-
 val ver: Os.Path = if (Os.isMac) fmideDir / "Contents" / "Eclipse" / "VER"  else fmideDir / "VER"
-
 val installKind: String = if(option.existingInstall.nonEmpty) "FMIDE plugins" else "FMIDE"
 if (ver.exists) {
   if (ver.read == verContent) {
@@ -514,20 +498,17 @@ if (ver.exists) {
 } else {
   println(s"Installing ${installKind} (this will take a while) ...")
 }
-
 var env = ISZ[(String, String)]()
 Os.env("JAVA_HOME") match {
   case Some(v) => env = env :+ (("PATH", s"${Os.path(v) / "bin"}${Os.pathSep}${Os.env("PATH").get}"))
   case _ =>
 }
-
 val verbosity: String = if(option.verbosePlus) "--verbose+" else if (option.verbose) "--verbose" else ""
 var p = proc"$sireum hamr phantom ${verbosity} --update --osate $fmideDir --version $osateVersion --features $features".env(env).console
 if(option.verbosePlus) {
   p = p.echo
 }
 p.runCheck()
-
 if(option.existingInstall.isEmpty) {
   Os.kind match {
     case Os.Kind.Linux if (fmideDir / "osate").exists =>
@@ -544,11 +525,9 @@ if(option.existingInstall.isEmpty) {
     case _ =>
   }
 }
-
 ver.writeOver(verContent)
 if(option.verbose || option.verbosePlus) {
   println(s"Wrote versions file: ${ver.value}")
 }
-
 println(s"${installKind} installed at $fmideDir")
 // END USER CODE
