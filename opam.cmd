@@ -25,9 +25,9 @@ import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val ocamlVersion = "4.06.1"
-val opamVersion = "2.1.2"
-val duneVersion = "2.9.3"
+val ocamlVersion = "4.14.0"
+val opamVersion = "2.1.4"
+val duneVersion = "3.7.1"
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
@@ -58,10 +58,10 @@ def opam(dir: Os.Path, bundle: String): Unit = {
   opamExe.chmod("+x")
 
   println(s"Initializing opam with OCaml $ocamlVersion in $dir ...")
-  Os.proc(ISZ(opamExe.string, "init", s"--root=$dir", s"--comp=$ocamlVersion", "--no-self-upgrade", "--no-setup", "--disable-sandboxing", "--reinit", "-a", "-j", cores)).runCheck()
-  Os.proc(ISZ((dir.up / "opam").canon.string, "repo", "add", s"--root=$dir", "--no-self-upgrade", "coq-released", "https://coq.inria.fr/opam/released")).runCheck()
-  Os.proc(ISZ((dir.up / "opam").canon.string, "install", s"--root=$dir", "--no-self-upgrade", s"dune=$duneVersion", "-y", "-j", cores)).runCheck()
-  Os.proc(ISZ((dir.up / "opam").canon.string, "pin", s"--root=$dir", "add", "dune", s"$duneVersion", "-y")).runCheck()
+  Os.proc(ISZ(opamExe.string, "init", "github", "git+https://github.com/ocaml/opam-repository.git", s"--root=$dir", s"--comp=$ocamlVersion", "--no-self-upgrade", "--no-setup", "--disable-sandboxing", "--reinit", "-a", "-j", cores)).console.runCheck()
+  Os.proc(ISZ((dir.up / "opam").canon.string, "repo", "add", s"--root=$dir", "--no-self-upgrade", "coq-released", "https://coq.inria.fr/opam/released")).console.runCheck()
+  Os.proc(ISZ((dir.up / "opam").canon.string, "install", s"--root=$dir", "--no-self-upgrade", s"dune=$duneVersion", "-y", "-j", cores)).console.runCheck()
+  Os.proc(ISZ((dir.up / "opam").canon.string, "pin", s"--root=$dir", "add", "dune", s"$duneVersion", "-y")).console.runCheck()
   println()
 }
 

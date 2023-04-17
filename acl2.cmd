@@ -40,7 +40,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 }
 
 def ccl(p: String): Unit = {
-  val cclVersion = "1.11.5"
+  val cclVersion = "1.12.1"
   val cclUrlPrefix = s"https://github.com/Clozure/ccl/releases/download/v$cclVersion/"
   val cclBundleMap: Map[String, String] = Map.empty[String, String] ++ ISZ(
     "linux" ~> s"ccl-$cclVersion-linuxx86.tar.gz",
@@ -76,7 +76,7 @@ def ccl(p: String): Unit = {
 def acl2(p: String): Unit = {
   ccl(p)
 
-  val acl2Version = "8.2"
+  val acl2Version = "8.5"
 
   val acl2UrlPrefix = s"https://github.com/acl2-devel/acl2-devel/releases/download/$acl2Version/"
 
@@ -119,14 +119,6 @@ def acl2(p: String): Unit = {
 def platform(p: String): Unit = {
   p match {
     case string"mac" =>
-      val r = Os.proc(ISZ("sw_vers", "-productVersion")).runCheck()
-      val versionOps = ops.StringOps(r.out)
-      val version = Z(versionOps.substring(3, versionOps.indexOfFrom('.', 4))).get
-      if (version >= 14) {
-        println("Please install acl2 under macOS Mojave or later using macports as follows:")
-        println("sudo port install acl2 +certify")
-        Os.exit(0)
-      }
     case string"linux" =>
     case string"-h" =>
       usage()
