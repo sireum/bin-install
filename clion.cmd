@@ -28,13 +28,22 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2023.1"
-val isLocal: B = ops.StringOps(home.string).startsWith(Os.home.canon.string) && (homeBin / "distro.cmd").exists
+val clionVersion = "2023.1.1"
+val plugins = HashSSet.empty[String] ++ ISZ[String]("rust", "toml")
+val init = Init(home, Os.kind, Sireum.versions)
+val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.ver, "-")}".render
+val isLocal: B = ops.StringOps(home.string).startsWith(Os.home.canon.string) && (homeBin / "clean.sh").exists
 val settingsDir: String = if (isLocal) if (Os.isWin) ops.StringOps((home / ".settings").string).replaceAllChars('\\', '/') else (home / ".settings").string else "${user.home}"
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case Some(dir) => Os.path(dir)
   case _ => Os.home / "Downloads" / "sireum"
+}
+
+def installPlugins(pluginDir: Os.Path): Unit = {
+  val pluginFilter = (p: Init.Plugin) => plugins.contains(p.id)
+  init.downloadPlugins(F, pluginFilter)
+  init.extractPlugins(F, pluginDir, pluginFilter)
 }
 
 def patchIdeaProperties(platform: String, p: Os.Path): Unit = {
@@ -69,7 +78,7 @@ def mac(): Unit = {
   val clionAppDir = clionDir / "CLion.app"
   val ver = clionDir / "VER"
 
-  if (ver.exists && ver.read == clionVersion) {
+  if (ver.exists && ver.read == clionInstallVersion) {
     return
   }
 
@@ -95,13 +104,15 @@ def mac(): Unit = {
 
   deleteSources(clionDir)
 
+  installPlugins(clionAppDir / "Contents" / "plugins")
+
   println()
 
   patchIdeaProperties("mac", clionAppDir / "Contents" / "Info.plist")
 
   proc"codesign --force --deep --sign - $clionAppDir".run()
 
-  ver.writeOver(clionVersion)
+  ver.writeOver(clionInstallVersion)
 
   println()
   println(s"CLion is installed at $clionDir")
@@ -112,7 +123,7 @@ def linux(isArm: B): Unit = {
   val clionDir = platformDir / "clion"
   val ver = clionDir / "VER"
 
-  if (ver.exists && ver.read == clionVersion) {
+  if (ver.exists && ver.read == clionInstallVersion) {
     return
   }
 
@@ -133,11 +144,13 @@ def linux(isArm: B): Unit = {
 
   deleteSources(clionDir)
 
+  installPlugins(clionDir / "plugins")
+
   println()
 
   patchIdeaProperties("linux", clionDir / "bin" / "idea.properties")
 
-  ver.writeOver(clionVersion)
+  ver.writeOver(clionInstallVersion)
 
   println()
   println(s"CLion is installed at $clionDir")
@@ -148,7 +161,7 @@ def win(): Unit = {
   val clionDir = platformDir / "clion"
   val ver = clionDir / "VER"
 
-  if (ver.exists && ver.read == clionVersion) {
+  if (ver.exists && ver.read == clionInstallVersion) {
     return
   }
 
@@ -169,11 +182,13 @@ def win(): Unit = {
 
   deleteSources(clionDir)
 
+  installPlugins(clionDir / "plugins")
+
   println()
 
   patchIdeaProperties("win", clionDir / "bin" / "idea.properties")
 
-  ver.writeOver(clionVersion)
+  ver.writeOver(clionInstallVersion)
 
   println()
   println(s"CLion is installed at $clionDir")
