@@ -88,7 +88,7 @@ def linux(isArm: B): Unit = {
     return
   }
 
-  val javaV = "19"
+  val javaV = "17"
   val arch: String = if (isArm) "aarch64" else "amd64"
   val bundle = s"graalvm-ce-java$javaV-linux-$arch-$graalVersion.tar.gz"
   val cache = cacheDir / bundle
