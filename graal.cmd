@@ -30,7 +30,7 @@ def usage(): Unit = {
 
 
 val homeBin: Os.Path = Os.slashDir.up.canon
-val graalVersion = "22.3.1"
+val graalVersion = "22.3.2"
 val url = s"https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-$graalVersion"
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
@@ -47,7 +47,7 @@ def mac(): Unit = {
     return
   }
 
-  val javaV = "19"
+  val javaV = "17"
   val arch: String = if (ops.StringOps(proc"uname -m".runCheck().out).trim == "arm64") "aarch64" else "amd64"
   val bundle = s"graalvm-ce-java$javaV-darwin-$arch-$graalVersion.tar.gz"
   val cache = cacheDir / bundle
