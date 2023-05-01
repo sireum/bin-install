@@ -24,7 +24,6 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val home = homeBin.up.canon
 val ocamlVersion = "4.14.0"
 val opamVersion = "2.1.4"
 val duneVersion = "3.7.1"

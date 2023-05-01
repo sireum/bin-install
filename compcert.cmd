@@ -24,17 +24,11 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val home = homeBin.up.canon
 val compCertVersion = "3.12"
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
   case _ => s"${Os.numOfProcessors}"
-}
-
-val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
-  case Some(dir) => Os.path(dir)
-  case _ => Os.home / "Downloads" / "sireum"
 }
 
 
@@ -72,7 +66,7 @@ def install(platformDir: Os.Path): Unit = {
   }
 
   (Os.slashDir / "menhir.cmd").slash(ISZ())
-  (Os.slashDir / "coq.cmd").slash(ISZ())
+  (Os.slashDir / "coq.cmd").slash(ISZ("ide"))
   compCert(opamDir)
 
   ver.writeOver(compCertVersion)

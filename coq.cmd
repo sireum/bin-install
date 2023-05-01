@@ -24,7 +24,6 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val home = homeBin.up.canon
 val coqVersion = "8.15.2"
 
 val (cores, isIde): (String, B) = Os.cliArgs match {

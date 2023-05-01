@@ -31,11 +31,6 @@ val cores: String = Os.cliArgs match {
   case _ => s"${Os.numOfProcessors}"
 }
 
-val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
-  case Some(dir) => Os.path(dir)
-  case _ => Os.home / "Downloads" / "sireum"
-}
-
 
 def menhir(dir: Os.Path): Unit = {
   println(s"Installing Menhir $menhirVersion ...")
