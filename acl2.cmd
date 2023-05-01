@@ -29,9 +29,6 @@ def usage(): Unit = {
 }
 
 val homeBin: Os.Path = Os.slashDir.up.canon
-val home = homeBin.up.canon
-val sireumJar = homeBin / "sireum.jar"
-val sireum = homeBin / (if (Os.isWin) "sireum.bat" else "sireum")
 var cores: Z = 4
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
@@ -47,13 +44,16 @@ def ccl(p: String): Unit = {
     "mac" ~> s"ccl-$cclVersion-darwinx86.tar.gz"
   )
 
+  val appDir = Os.home / "Applications"
+  val cclDir = appDir / "ccl"
   val platformDir = homeBin / p
-  val cclDir = platformDir / "ccl"
-  val ver = cclDir / "VER"
+  val ver = platformDir / "ccl" / "VER"
 
   if (ver.exists && ver.read == cclVersion) {
     return
   }
+
+  appDir.mkdirAll()
 
   val bundle = cclBundleMap.get(p).get
 
@@ -68,7 +68,10 @@ def ccl(p: String): Unit = {
     cclDir.removeAll()
   }
   println(s"Extracting $cache ...")
-  Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
+  Os.proc(ISZ("tar", "xfz", cache.string)).at(appDir).console.runCheck()
+  platformDir.mkdirAll()
+  (platformDir / "ccl").removeAll()
+  proc"ln -s $cclDir .".at(platformDir).runCheck()
 
   ver.writeOver(cclVersion)
 }
@@ -80,10 +83,11 @@ def acl2(p: String): Unit = {
 
   val acl2UrlPrefix = s"https://github.com/acl2-devel/acl2-devel/releases/download/$acl2Version/"
 
+  val appDir = Os.home / "Applications"
+  val acl2Dir = appDir / "acl2"
+  val cclExe = appDir / "ccl" / (if (p == "linux") "lx86cl64" else "dx86cl64")
   val platformDir = homeBin / p
-  val acl2Dir = platformDir / "acl2"
-  val cclExe = platformDir / "ccl" / (if (p == "linux") "lx86cl64" else "dx86cl64")
-  val ver = acl2Dir / "VER"
+  val ver = platformDir / "acl2" / "VER"
 
   if (ver.exists && ver.read == acl2Version) {
     return
@@ -101,8 +105,11 @@ def acl2(p: String): Unit = {
     acl2Dir.removeAll()
   }
   println(s"Extracting $cache ...")
-  Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  (platformDir / s"acl2-$acl2Version").moveTo(acl2Dir)
+  Os.proc(ISZ("tar", "xfz", cache.string)).at(appDir).console.runCheck()
+  (appDir / s"acl2-$acl2Version").moveTo(acl2Dir)
+  platformDir.mkdirAll()
+  (platformDir / "acl2").removeAll()
+  proc"ln -s $acl2Dir .".at(platformDir).runCheck()
 
   val acl2 = acl2Dir / "saved_acl2"
   println(s"Creating $acl2 ...")
@@ -113,7 +120,7 @@ def acl2(p: String): Unit = {
 
   ver.writeOver(acl2Version)
 
-  println(s"... done! acl2 is installed at $acl2Dir")
+  println(s"... done! ACL2 is installed at $acl2Dir")
 }
 
 def platform(p: String): Unit = {
