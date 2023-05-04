@@ -66,7 +66,7 @@ def install(platformDir: Os.Path): Unit = {
   }
 
   (Os.slashDir / "menhir.cmd").slash(ISZ())
-  (Os.slashDir / "coq.cmd").slash(ISZ("ide"))
+  (Os.slashDir / "coq.cmd").slash(ISZ())
   compCert(opamDir)
 
   ver.writeOver(compCertVersion)
