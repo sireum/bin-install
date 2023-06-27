@@ -28,7 +28,7 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2023.1.3"
+val clionVersion = "2023.1.4"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("rust", "toml")
 val init = Init(home, Os.kind, Sireum.versions)
 val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.ver, "-")}".render
