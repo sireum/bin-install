@@ -23,7 +23,7 @@ val fmideTool: Tool = Tool(
   usageDescOpt = None(),
   opts = ISZ(
     Opt(name = "awas", longKey = "awas", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2023.03231646.2bf1dca")), description = "AWAS version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2023.07271345.065b5fa")), description = "AWAS version"),
     Opt(name = "agree", longKey = "agree", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("agree_2.9.1")), description = "AGREE version"),
     Opt(name = "briefcase", longKey = "briefcase", shortKey = None(),
@@ -31,13 +31,13 @@ val fmideTool: Tool = Tool(
     Opt(name = "eclipse", longKey = "eclipse", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("2021-03")), description = "Eclipse release version"),
     Opt(name = "gumbo", longKey = "gumbo", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2023.04051454.3dcd426")), description = "Sireum GUMBO version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2023.07271345.065b5fa")), description = "Sireum GUMBO version"),
     Opt(name = "hamr", longKey = "hamr", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2023.03231646.2bf1dca")), description = "Sireum HAMR version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2023.07271345.065b5fa")), description = "Sireum HAMR version"),
     Opt(name = "osate", longKey = "osate", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("2.10.2-vfinal")), description = "OSATE version"),
     Opt(name = "resolute", longKey = "resolute", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("resolute_3.0.0")), description = "Resolute version"),
+      tpe = Type.Str(sep = None(), default = Some("resolute_3.0.0")), description = "Resolute version")
   ),
   groups = ISZ(
     OptGroup(name = "Installation", opts = ISZ(
