@@ -159,7 +159,7 @@ def win(javaVersion: String, graalVersion: String): Unit = {
 }
 
 def platform(p: String): Unit = {
-  val graalVersion = "22.3.2"
+  val graalVersion = "22.3.3"
   val javaVersion = "17"
   p match {
     case string"mac" =>
