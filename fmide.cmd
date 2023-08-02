@@ -64,7 +64,7 @@ import Cli._
           |    --eclipse            Eclipse release version (expects a string; default is
           |                           "2021-03")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
-          |                           "1.2023.07271345.065b5fa")
+          |                           "1.2023.08021014.21d7eb2")
           |    --hamr               Sireum HAMR version (expects a string; default is
           |                           "1.2023.07271345.065b5fa")
           |    --osate              OSATE version (expects a string; default is
@@ -84,7 +84,7 @@ import Cli._
     var agree: Option[String] = Some("agree_2.9.1")
     var briefcase: Option[String] = Some("briefcase_0.8.0")
     var eclipse: Option[String] = Some("2021-03")
-    var gumbo: Option[String] = Some("1.2023.07271345.065b5fa")
+    var gumbo: Option[String] = Some("1.2023.08021014.21d7eb2")
     var hamr: Option[String] = Some("1.2023.07271345.065b5fa")
     var osate: Option[String] = Some("2.10.2-vfinal")
     var resolute: Option[String] = Some("resolute_3.0.0")
