@@ -116,7 +116,7 @@ def win(graalVersion: String): Unit = {
   }
 
   val arch = "x64"
-  val bundle = s"graalvm-community-jdk-${graalVersion}_windows-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-community-jdk-${graalVersion}_windows-${arch}_bin.zip"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
