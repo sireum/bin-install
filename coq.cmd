@@ -24,7 +24,7 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val coqVersion = "8.15.2"
+val coqVersion = "8.16.1"
 
 val (cores, isIde): (String, B) = Os.cliArgs match {
   case ISZ(n) => (Z(n).getOrElse(Os.numOfProcessors).string, F)

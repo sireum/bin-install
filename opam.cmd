@@ -24,9 +24,9 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val ocamlVersion = "4.14.0"
-val opamVersion = "2.1.4"
-val duneVersion = "3.7.1"
+val ocamlVersion = "4.14.1"
+val opamVersion = "2.1.5"
+val duneVersion = "3.10.0"
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
@@ -58,7 +58,7 @@ def opam(dir: Os.Path, bundle: String): Unit = {
 
   println(s"Initializing opam with OCaml $ocamlVersion in $dir ...")
   Os.proc(ISZ(opamExe.string, "init", "github", "git+https://github.com/ocaml/opam-repository.git", s"--root=$dir", s"--comp=$ocamlVersion", "--no-self-upgrade", "--no-setup", "--disable-sandboxing", "--reinit", "-a", "-j", cores)).console.runCheck()
-  Os.proc(ISZ((dir.up / "opam").canon.string, "repo", "add", s"--root=$dir", "--no-self-upgrade", "coq-released", "https://coq.inria.fr/opam/released")).console.runCheck()
+  Os.proc(ISZ((dir.up / "opam").canon.string, "repo", "add", s"--root=$dir", "--no-self-upgrade", "--all-switches", "coq-released", "https://coq.inria.fr/opam/released")).console.runCheck()
   Os.proc(ISZ((dir.up / "opam").canon.string, "install", s"--root=$dir", "--no-self-upgrade", s"dune=$duneVersion", "-y", "-j", cores)).console.runCheck()
   Os.proc(ISZ((dir.up / "opam").canon.string, "pin", s"--root=$dir", "add", "dune", s"$duneVersion", "-y")).console.runCheck()
   println()
@@ -67,7 +67,7 @@ def opam(dir: Os.Path, bundle: String): Unit = {
 def install(platformDir: Os.Path, opamSuffix: String): Unit = {
   val opamDir = platformDir / ".opam"
   val ver = platformDir / ".opam.ver"
-  val oVer = s"$opamVersion-20220523.0"
+  val oVer = s"$opamVersion-$ocamlVersion-$duneVersion"
 
   if (ver.exists && ver.read == oVer) {
     return
