@@ -82,7 +82,7 @@ def linux(isArm: B, graalVersion: String): Unit = {
     return
   }
 
-  val arch: String = if (isArm) "aarch64" else "amd64"
+  val arch: String = if (isArm) "aarch64" else "x64"
   val bundle = s"graalvm-community-jdk-${graalVersion}_linux-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
 
