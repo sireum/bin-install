@@ -23,6 +23,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
+val graalVersion = "21.0.1"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
@@ -139,7 +140,6 @@ def win(graalVersion: String): Unit = {
 }
 
 def platform(p: String): Unit = {
-  val graalVersion = "21.0.0"
   p match {
     case string"mac" =>
       val isArm: B = ops.StringOps(proc"uname -m".runCheck().out).trim == "arm64"
