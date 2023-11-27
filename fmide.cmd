@@ -56,7 +56,7 @@ import Cli._
           |
           |Available Options:
           |    --awas               AWAS version (expects a string; default is
-          |                           "1.2023.10231030.6b82283")
+          |                           "1.2023.11061541.f31948c")
           |    --agree              AGREE version (expects a string; default is
           |                           "agree_2.9.1")
           |    --briefcase          BriefCASE version (expects a string; default is
@@ -66,7 +66,7 @@ import Cli._
           |    --gumbo              Sireum GUMBO version (expects a string; default is
           |                           "1.2023.10061732.b0cf3cb")
           |    --hamr               Sireum HAMR version (expects a string; default is
-          |                           "1.2023.10231030.6b82283")
+          |                           "1.2023.11061541.f31948c")
           |    --osate              OSATE version (expects a string; default is
           |                           "2.10.2-vfinal")
           |    --resolute           Resolute version (expects a string; default is
@@ -80,12 +80,12 @@ import Cli._
           |-v, --verbose            Verbose output
           |    --verbose+           Increased verbose output""".render
 
-    var awas: Option[String] = Some("1.2023.10231030.6b82283")
+    var awas: Option[String] = Some("1.2023.11061541.f31948c")
     var agree: Option[String] = Some("agree_2.9.1")
     var briefcase: Option[String] = Some("briefcase_0.8.0")
     var eclipse: Option[String] = Some("2021-03")
     var gumbo: Option[String] = Some("1.2023.10061732.b0cf3cb")
-    var hamr: Option[String] = Some("1.2023.10231030.6b82283")
+    var hamr: Option[String] = Some("1.2023.11061541.f31948c")
     var osate: Option[String] = Some("2.10.2-vfinal")
     var resolute: Option[String] = Some("resolute_3.0.0")
     var existingInstall: Option[String] = None[String]()
