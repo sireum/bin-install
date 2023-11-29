@@ -23,6 +23,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
+val jdkVersion = "21"
 val graalVersion = "21.0.1"
 
 def usage(): Unit = {
@@ -37,33 +38,32 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-@strictpure def url(graalVersion: String) = s"https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-$graalVersion"
+@strictpure def url = s"https://download.oracle.com/graalvm/$jdkVersion/archive"
 
 def mac(isArm: B, graalVersion: String): Unit = {
   val platformDir = homeBin / "mac"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$graalVersion"
+  val version = s"$jdkVersion-$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-community-jdk-${graalVersion}_macos-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-jdk-${graalVersion}_macos-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Graal $graalVersion ...")
-    println(s"${url(graalVersion)}/$bundle")
-    cache.downloadFrom(s"${url(graalVersion)}/$bundle")
+    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
     graalDir.removeAll()
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
     (p / "Contents" / "Home").moveTo(graalDir)
     p.removeAll()
   }
@@ -77,27 +77,27 @@ def linux(isArm: B, graalVersion: String): Unit = {
   val platformDir: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$graalVersion"
+  val version = s"$jdkVersion-$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-community-jdk-${graalVersion}_linux-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-jdk-${graalVersion}_linux-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Graal $graalVersion ...")
-    cache.downloadFrom(s"${url(graalVersion)}/$bundle")
+    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
     graalDir.removeAll()
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
     p.moveTo(graalDir)
   }
 
@@ -110,27 +110,27 @@ def win(graalVersion: String): Unit = {
   val platformDir = homeBin / "win"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$graalVersion"
+  val version = s"$jdkVersion-$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch = "x64"
-  val bundle = s"graalvm-community-jdk-${graalVersion}_windows-${arch}_bin.zip"
+  val bundle = s"graalvm-jdk-${graalVersion}_windows-${arch}_bin.zip"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Graal $graalVersion ...")
-    cache.downloadFrom(s"${url(graalVersion)}/$bundle")
+    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
     graalDir.removeAll()
   }
   println(s"Extracting $cache ...")
   cache.unzipTo(platformDir)
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
     p.moveTo(graalDir)
   }
 
