@@ -62,6 +62,13 @@ proc"$rustupInit --default-toolchain=$version -y".env(ISZ(
   "RUSTUP_HOME" ~> (rustDir / "rustup").string)
 ).console.runCheck()
 
+val rustupDir = Os.home / ".rustup"
+val cargoDir = Os.home / ".cargo"
+rustupDir.removeAll()
+cargoDir.removeAll()
+rustupDir.mklink(rustDir / "rustup")
+cargoDir.mklink(rustDir / "cargo")
+
 ver.writeOver(version)
 
 println()
