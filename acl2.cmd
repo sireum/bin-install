@@ -146,7 +146,9 @@ if (Os.cliArgs.nonEmpty) {
 }
 
 Os.kind match {
-  case Os.Kind.Mac => platform("mac")
+  case Os.Kind.Mac =>
+    val isArm: B = ops.StringOps(proc"uname -m".runCheck().out).trim == "arm64"
+    platform(if (isArm) "???" else "mac")
   case Os.Kind.Linux => platform("linux")
   case Os.Kind.Win => platform("win")
   case _ => platform("???")

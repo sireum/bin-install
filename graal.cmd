@@ -38,9 +38,11 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-@strictpure def url = s"https://download.oracle.com/graalvm/$jdkVersion/archive"
+def url: String = {
+  return s"https://download.oracle.com/graalvm/$jdkVersion/archive"
+}
 
-def mac(isArm: B, graalVersion: String): Unit = {
+def mac(isArm: B): Unit = {
   val platformDir = homeBin / "mac"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
@@ -73,7 +75,7 @@ def mac(isArm: B, graalVersion: String): Unit = {
   println("... done!")
 }
 
-def linux(isArm: B, graalVersion: String): Unit = {
+def linux(isArm: B): Unit = {
   val platformDir: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
@@ -106,7 +108,7 @@ def linux(isArm: B, graalVersion: String): Unit = {
   println("... done!")
 }
 
-def win(graalVersion: String): Unit = {
+def win(): Unit = {
   val platformDir = homeBin / "win"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
@@ -143,10 +145,10 @@ def platform(p: String): Unit = {
   p match {
     case string"mac" =>
       val isArm: B = ops.StringOps(proc"uname -m".runCheck().out).trim == "arm64"
-      mac(isArm, graalVersion)
-    case string"linux" => linux(F, graalVersion)
-    case string"linux/arm" => linux(T, graalVersion)
-    case string"win" => win(graalVersion)
+      mac(isArm)
+    case string"linux" => linux(F)
+    case string"linux/arm" => linux(T)
+    case string"win" => win()
     case string"-h" => usage()
     case _ =>
       eprintln("Unsupported platform")
