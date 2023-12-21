@@ -36,7 +36,9 @@ val (homeBinPlatform, rustupInitUrl): (Os.Path, String) = Os.kind match {
   case Os.Kind.LinuxArm =>
     (homeBin / "linux" / "arm", "https://static.rust-lang.org/rustup/dist/aarch64-unknown-linux-gnu/rustup-init")
   case Os.Kind.Win =>
-    (homeBin / "win", "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe")
+    (homeBin / "win",
+      if (Os.isWinArm) "https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe"
+      else "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe")
   case Os.Kind.Unsupported => halt("Unsupported platform")
 }
 val rustDir: Os.Path = homeBinPlatform / "rust"

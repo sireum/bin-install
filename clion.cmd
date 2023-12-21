@@ -165,7 +165,7 @@ def win(): Unit = {
     return
   }
 
-  val bundle = s"CLion-$clionVersion.win.zip"
+  val bundle: String = if (Os.isWinArm) s"CLion-$clionVersion-aarch64.exe" else s"CLion-$clionVersion.win.zip"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
@@ -178,7 +178,13 @@ def win(): Unit = {
   }
   println(s"Extracting $cache ...")
   clionDir.mkdirAll()
-  cache.unzipTo(clionDir)
+
+  if (Os.isWinArm) {
+    init.install7z()
+    proc"${homeBin / "win" / "7z.exe"} x $cache".at(clionDir).runCheck()
+  } else {
+    cache.unzipTo(clionDir)
+  }
 
   deleteSources(clionDir)
 
