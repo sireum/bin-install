@@ -181,7 +181,7 @@ def win(): Unit = {
 
   if (Os.isWinArm) {
     init.install7z()
-    proc"${homeBin / "win" / "7z.exe"} x $cache".at(clionDir).runCheck()
+    proc"${homeBin / "win" / "7z" / "7z.exe"} x $cache".at(clionDir).runCheck()
   } else {
     cache.unzipTo(clionDir)
   }
