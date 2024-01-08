@@ -23,7 +23,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val version = "1.74.1"
+val version = "1.75.0"
 
 val homeBin: Os.Path = Os.slashDir.up.canon
 val (homeBinPlatform, rustupInitUrl): (Os.Path, String) = Os.kind match {
