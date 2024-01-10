@@ -34,6 +34,7 @@ val init = Init(home, Os.kind, Sireum.versions)
 val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.ver, "-")}".render
 val isLocal: B = ops.StringOps(home.string).startsWith(Os.home.canon.string) && (homeBin / "clean.sh").exists
 val settingsDir: String = if (isLocal) if (Os.isWin) ops.StringOps((home / ".settings").string).replaceAllChars('\\', '/') else (home / ".settings").string else "${user.home}"
+val delPlugins = ISZ[String]("ml-llm")
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case Some(dir) => Os.path(dir)
@@ -44,6 +45,13 @@ def installPlugins(pluginDir: Os.Path): Unit = {
   val pluginFilter = (p: Init.Plugin) => plugins.contains(p.id)
   init.downloadPlugins(F, pluginFilter)
   init.extractPlugins(F, pluginDir, pluginFilter)
+}
+
+def deletePlugins(pluginDir: Os.Path): Unit = {
+  for (p <- delPlugins) {
+    println(s"Removing $p plugin ...")
+    (pluginDir / p).removeAll()
+  }
 }
 
 def patchIdeaProperties(platform: String, p: Os.Path): Unit = {
@@ -105,6 +113,7 @@ def mac(): Unit = {
   deleteSources(clionDir)
 
   installPlugins(clionAppDir / "Contents" / "plugins")
+  deletePlugins(clionDir / "plugins")
 
   println()
 
@@ -145,6 +154,7 @@ def linux(isArm: B): Unit = {
   deleteSources(clionDir)
 
   installPlugins(clionDir / "plugins")
+  deletePlugins(clionDir / "plugins")
 
   println()
 
@@ -189,6 +199,7 @@ def win(): Unit = {
   deleteSources(clionDir)
 
   installPlugins(clionDir / "plugins")
+  deletePlugins(clionDir / "plugins")
 
   println()
 
