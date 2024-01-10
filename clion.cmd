@@ -50,6 +50,7 @@ def installPlugins(pluginDir: Os.Path): Unit = {
 def deletePlugins(pluginDir: Os.Path): Unit = {
   for (p <- delPlugins) {
     println(s"Removing $p plugin ...")
+    println(pluginDir / p)
     (pluginDir / p).removeAll()
   }
 }
@@ -113,7 +114,7 @@ def mac(): Unit = {
   deleteSources(clionDir)
 
   installPlugins(clionAppDir / "Contents" / "plugins")
-  deletePlugins(clionDir / "Contents" / "plugins")
+  deletePlugins(clionAppDir / "Contents" / "plugins")
 
   println()
 
