@@ -113,7 +113,7 @@ def mac(): Unit = {
   deleteSources(clionDir)
 
   installPlugins(clionAppDir / "Contents" / "plugins")
-  deletePlugins(clionDir / "plugins")
+  deletePlugins(clionDir / "Contents" / "plugins")
 
   println()
 
