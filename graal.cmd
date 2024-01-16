@@ -24,7 +24,7 @@ exit /B %errorlevel%
 import org.sireum._
 
 val jdkVersion = "21"
-val graalVersion = "21.0.1"
+val graalVersion = "21.0.2"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
