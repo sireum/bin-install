@@ -28,12 +28,11 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2023.3.4"
+val clionVersion = "2024.1"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("rust", "toml")
 val init = Init(home, Os.kind, Sireum.versions)
 val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.version, "-")}".render
-val isLocal: B = ops.StringOps(home.string).startsWith(Os.home.canon.string) && (homeBin / "clean.sh").exists
-val settingsDir: String = if (isLocal) if (Os.isWin) ops.StringOps((home / ".settings").string).replaceAllChars('\\', '/') else (home / ".settings").string else "${user.home}"
+val settingsDir: String = if (Os.isWin) ops.StringOps((home / ".settings").string).replaceAllChars('\\', '/') else (home / ".settings").string
 val delPlugins = ISZ[String]("ml-llm")
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
@@ -44,7 +43,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 def installPlugins(pluginDir: Os.Path): Unit = {
   val pluginFilter = (p: Init.Plugin) => plugins.contains(p.id)
   init.downloadPlugins(F, pluginFilter)
-  init.extractPlugins(F, pluginDir, pluginFilter)
+  init.extractPlugins(pluginDir, pluginFilter)
 }
 
 def deletePlugins(pluginDir: Os.Path): Unit = {
@@ -60,12 +59,15 @@ def patchIdeaProperties(platform: String, p: Os.Path): Unit = {
   val content = p.read
   val newContent: String = platform match {
     case "mac" =>
-      val contentOps = ops.StringOps(content)
-      val i = contentOps.stringIndexOf("idea.paths.selector")
-      val j = contentOps.stringIndexOfFrom("<string>", i)
-      val k = contentOps.stringIndexOfFrom("</string>", j)
-      if (isLocal) s"${contentOps.substring(0, j)}<string>.CLion</string>\n        <key>idea.config.path</key>\n        <string>$settingsDir/.CLion/config</string>\n        <key>idea.system.path</key>\n        <string>$settingsDir/.CLion/system</string>\n        <key>idea.log.path</key>\n        <string>$settingsDir/.CLion/log</string>\n        <key>idea.plugins.path</key>\n        <string>$settingsDir/.CLion/plugins${contentOps.substring(k, content.size)}"
-      else s"${contentOps.substring(0, j)}<string>CLion${contentOps.substring(k, content.size)}"
+      if (p.ext == "plist") {
+        val contentOps = ops.StringOps(content)
+        val i = contentOps.stringIndexOf("idea.paths.selector")
+        val j = contentOps.stringIndexOfFrom("<string>", i)
+        val k = contentOps.stringIndexOfFrom("</string>", j)
+        s"${contentOps.substring(0, j)}<string>.CLion</string>\n        <key>idea.config.path</key>\n        <string>$settingsDir/.CLion/config</string>\n        <key>idea.system.path</key>\n        <string>$settingsDir/.CLion/system</string>\n        <key>idea.log.path</key>\n        <string>$settingsDir/.CLion/log</string>\n        <key>idea.plugins.path</key>\n        <string>$settingsDir/.CLion/plugins${contentOps.substring(k, content.size)}"
+      } else {
+        s"idea.config.path=$settingsDir/.CLion/config\nidea.system.path=$settingsDir/.CLion/system\nidea.log.path=$settingsDir/.CLion/log\nidea.plugins.path=$settingsDir/.CLion/plugins\n$content"
+      }
     case "win" =>
       s"idea.config.path=$settingsDir/.CLion/config\r\nidea.system.path=$settingsDir/.CLion/system\r\nidea.log.path=$settingsDir/.CLion/log\r\nidea.plugins.path=$settingsDir/.CLion/plugins\r\n$content"
     case "linux" =>
@@ -113,12 +115,15 @@ def mac(): Unit = {
 
   deleteSources(clionDir)
 
-  installPlugins(clionAppDir / "Contents" / "plugins")
   deletePlugins(clionAppDir / "Contents" / "plugins")
+  val pluginsDir = Os.path(settingsDir) / ".CLion" / "plugins"
+  pluginsDir.mkdirAll()
+  installPlugins(pluginsDir)
 
   println()
 
   patchIdeaProperties("mac", clionAppDir / "Contents" / "Info.plist")
+  patchIdeaProperties("mac", clionAppDir / "Contents" / "bin" / "idea.properties")
 
   proc"codesign --force --deep --sign - $clionAppDir".run()
 
