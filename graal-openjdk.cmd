@@ -23,7 +23,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val graalVersion = "22.0.0"
+val graalVersion = "22.0.1"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
