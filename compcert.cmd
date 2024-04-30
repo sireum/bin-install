@@ -41,6 +41,7 @@ def compCert(dir: Os.Path): Unit = {
   println()
 }
 
+
 def install(platformDir: Os.Path): Unit = {
   val opamDir = platformDir / ".opam"
   val ver = platformDir / ".compcert.ver"
