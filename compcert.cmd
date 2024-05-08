@@ -24,7 +24,7 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val compCertVersion = "3.13"
+val compCertVersion = "3.14" // see: https://github.com/coq/opam/tree/master/released/packages/coq-compcert
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string

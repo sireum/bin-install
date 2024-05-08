@@ -26,7 +26,7 @@ import org.sireum._
 val homeBin = Os.slashDir.up.canon
 val ocamlVersion = "4.14.1"
 val opamVersion = "2.1.5"
-val duneVersion = "3.12.1"
+val duneVersion = "3.15.2"
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
