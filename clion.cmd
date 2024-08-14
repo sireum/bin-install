@@ -28,7 +28,7 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2024.1.5"
+val clionVersion = "2024.2"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("rust", "toml")
 val init = Init(home, Os.kind, Sireum.versions)
 val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.version, "-")}".render
@@ -59,15 +59,7 @@ def patchIdeaProperties(platform: String, p: Os.Path): Unit = {
   val content = p.read
   val newContent: String = platform match {
     case "mac" =>
-      if (p.ext == "plist") {
-        val contentOps = ops.StringOps(content)
-        val i = contentOps.stringIndexOf("idea.paths.selector")
-        val j = contentOps.stringIndexOfFrom("<string>", i)
-        val k = contentOps.stringIndexOfFrom("</string>", j)
-        s"${contentOps.substring(0, j)}<string>.CLion</string>\n        <key>idea.config.path</key>\n        <string>$settingsDir/.CLion/config</string>\n        <key>idea.system.path</key>\n        <string>$settingsDir/.CLion/system</string>\n        <key>idea.log.path</key>\n        <string>$settingsDir/.CLion/log</string>\n        <key>idea.plugins.path</key>\n        <string>$settingsDir/.CLion/plugins${contentOps.substring(k, content.size)}"
-      } else {
-        s"idea.config.path=$settingsDir/.CLion/config\nidea.system.path=$settingsDir/.CLion/system\nidea.log.path=$settingsDir/.CLion/log\nidea.plugins.path=$settingsDir/.CLion/plugins\n$content"
-      }
+      s"idea.config.path=$settingsDir/.CLion/config\nidea.system.path=$settingsDir/.CLion/system\nidea.log.path=$settingsDir/.CLion/log\nidea.plugins.path=$settingsDir/.CLion/plugins\n$content"
     case "win" =>
       s"idea.config.path=$settingsDir/.CLion/config\r\nidea.system.path=$settingsDir/.CLion/system\r\nidea.log.path=$settingsDir/.CLion/log\r\nidea.plugins.path=$settingsDir/.CLion/plugins\r\n$content"
     case "linux" =>
@@ -122,7 +114,6 @@ def mac(): Unit = {
 
   println()
 
-  patchIdeaProperties("mac", clionAppDir / "Contents" / "Info.plist")
   patchIdeaProperties("mac", clionAppDir / "Contents" / "bin" / "idea.properties")
 
   proc"codesign --force --deep --sign - $clionAppDir".run()
