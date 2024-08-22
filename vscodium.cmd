@@ -51,6 +51,7 @@ def mac(): Unit = {
   val platform = homeBin / "mac"
   val vscodium = platform / "VSCodium.app"
   val ver = vscodium / "Contents" / "VER"
+  var updated = F
   if (!ver.exists || ver.read != version) {
     download(drop)
     vscodium.removeAll()
@@ -60,11 +61,16 @@ def mac(): Unit = {
     proc"xattr -rd com.apple.quarantine $vscodium".run()
     proc"codesign --force --deep --sign - $vscodium".run()
     println()
+    updated = T
   }
   (platform / "codium-portable-data").mkdirAll()
+  val codium = vscodium / "Contents"/ "Resources" / "app" / "bin" / "codium"
   for (ext <- extensions) {
-    proc"${platform / "VSCodium.app" / "Contents"/ "Resources" / "app" / "bin" / "codium"} --force --install-extension $ext".console.runCheck()
+    proc"$codium --force --install-extension $ext".console.runCheck()
     println()
+  }
+  if (updated) {
+    println(s"To launch VSCodium: open $vscodium")
   }
 }
 
@@ -73,6 +79,7 @@ def linux(isArm: B): Unit = {
   val platform: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
+  var updated = F
   if (!ver.exists || ver.read != version) {
     download(drop)
     println("Extracting VSCodium ...")
@@ -87,10 +94,15 @@ def linux(isArm: B): Unit = {
     vscodiumNew.moveTo(vscodium)
     ver.write(version)
     println()
+    updated = T
   }
+  val codium = vscodium / "bin" / "codium"
   for (ext <- extensions) {
-    proc"${vscodium / "bin" / "codium"} --force --install-extension $ext".console.runCheck()
+    proc"$codium --force --install-extension $ext".console.runCheck()
     println()
+  }
+  if (updated) {
+    println(s"To launch VSCodium: $codium")
   }
 }
 
@@ -99,6 +111,7 @@ def win(): Unit = {
   val platform = homeBin / "win"
   val vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
+  var updated = F
   if (!ver.exists || ver.read != version) {
     download(drop)
     val vscodiumNew = platform / "vscodium.new"
@@ -113,10 +126,15 @@ def win(): Unit = {
     vscodiumNew.moveTo(vscodium)
     ver.write(version)
     println()
+    updated = T
   }
+  val codium = vscodium / "bin" / "codium.cmd"
   for (ext <- extensions) {
-    proc"${vscodium / "bin" / "codium.cmd"} --force --install-extension $ext".console.runCheck()
+    proc"$codium --force --install-extension $ext".console.runCheck()
     println()
+  }
+  if (updated) {
+    println(s"To launch VSCodium: $codium")
   }
 }
 
