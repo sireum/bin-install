@@ -25,8 +25,6 @@ import org.sireum._
 
 
 val homeBin = Os.slashDir.up.canon
-val home = homeBin.up.canon
-val init = Init(home, Os.kind, Sireum.versions)
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case Some(dir) => Os.path(dir)
@@ -35,7 +33,24 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 
 val version = "1.92.2.24228"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
-val extensions = ISZ("sensmetry.sysml-2ls", "scalameta.metals", "James-Yu.latex-workshop")
+val extensions = ISZ(
+  "llvm-vs-code-extensions.vscode-clangd",
+  "mads-hartmann.bash-ide-vscode",
+  "mhutchie.git-graph",
+  "ecmel.vscode-html-css",
+  "kofuk.hugo-utils",
+  "redhat.java",
+  "James-Yu.latex-workshop",
+  "ms-vscode.powershell",
+  "ms-python.python",
+  "rust-lang.rust-analyzer",
+  "scalameta.metals",
+  "sensmetry.sysml-2ls",
+  "mshr-h.veriloghdl",
+  "redhat.vscode-xml",
+  "redhat.vscode-yaml",
+  "adamraichu.zip-viewer"
+)
 
 def download(drop: Os.Path): Unit = {
   val url = s"$urlPrefix/${drop.name}"
