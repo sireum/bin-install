@@ -56,10 +56,10 @@ def mac(): Unit = {
     vscodium.removeAll()
     println("Extracting VSCodium ...")
     drop.unzipTo(platform)
-    println()
     ver.write(version)
     proc"xattr -rd com.apple.quarantine $vscodium".run()
     proc"codesign --force --deep --sign - $vscodium".run()
+    println()
   }
   (platform / "codium-portable-data").mkdirAll()
   for (ext <- extensions) {
@@ -74,20 +74,18 @@ def linux(isArm: B): Unit = {
   val vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
   if (!ver.exists || ver.read != version) {
-    println("Extracting VSCodium ...")
     download(drop)
-    println()
+    println("Extracting VSCodium ...")
     val vscodiumNew = platform / "vscodium.new"
     drop.unTarGzTo(vscodiumNew)
     if ((vscodium / "data").exists) {
       (vscodium / "data").moveTo(vscodiumNew / "data")
+    } else {
+      (vscodiumNew / "data").mkdirAll()
     }
     vscodium.removeAll()
     vscodiumNew.moveTo(vscodium)
     ver.write(version)
-  }
-  for (ext <- extensions) {
-    proc"${platform / "VSCodium.app" / "Contents/Resources/app/bin/codium"} --force --install-extension $ext".console.runCheck()
     println()
   }
   for (ext <- extensions) {
@@ -100,19 +98,21 @@ def win(): Unit = {
   val drop = cacheDir / s"VSCodium-win32-${if (Os.isWinArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "win"
   val vscodium = platform / "vscodium"
-  println("Extracting VSCodium ...")
-  download(drop)
-  println()
   val ver = vscodium / "VER"
   if (!ver.exists || ver.read != version) {
+    download(drop)
     val vscodiumNew = platform / "vscodium.new"
+    println("Extracting VSCodium ...")
     drop.unzipTo(vscodiumNew)
     if ((vscodium / "data").exists) {
       (vscodium / "data").moveTo(vscodiumNew / "data")
+    } else {
+      (vscodiumNew / "data").mkdirAll()
     }
     vscodium.removeAll()
     vscodiumNew.moveTo(vscodium)
     ver.write(version)
+    println()
   }
   for (ext <- extensions) {
     proc"${vscodium / "bin" / "codium.cmd"} --force --install-extension $ext".console.runCheck()
