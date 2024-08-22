@@ -41,7 +41,6 @@ val extensions = ISZ(
   "kofuk.hugo-utils",
   "redhat.java",
   "James-Yu.latex-workshop",
-  "ms-vscode.powershell",
   "ms-python.python",
   "rust-lang.rust-analyzer",
   "scalameta.metals",
