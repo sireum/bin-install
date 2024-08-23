@@ -35,13 +35,17 @@ val version = "1.92.2.24228"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
 val extensions = ISZ(
   "llvm-vs-code-extensions.vscode-clangd",
+  "mike-lischke.vscode-antlr4",
   "mads-hartmann.bash-ide-vscode",
+  "dbaeumer.vscode-eslint",
   "mhutchie.git-graph",
   "ecmel.vscode-html-css",
   "kofuk.hugo-utils",
   "redhat.java",
+  "langium.langium-vscode",
   "James-Yu.latex-workshop",
   "ms-python.python",
+  "esbenp.prettier-vscode",
   "rust-lang.rust-analyzer",
   "scalameta.metals",
   "sensmetry.sysml-2ls",
