@@ -34,7 +34,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 val isInUserHome = ops.StringOps(s"${homeBin.up.canon}${Os.fileSep}").startsWith(Os.home.string)
 
 val version = "1.92.2.24228"
-val sireumExtVersion = "4.20240828.3b8fbbe"
+val sireumExtVersion = "4.20240828.9bcbe97"
 val sysIdeVersion = "0.6.2"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
 val sireumExtUrl = s"https://github.com/sireum/vscode-extension/releases/download/$sireumExtVersion/sireum-vscode-extension.vsix"
@@ -165,23 +165,37 @@ def installExtensions(codium: Os.Path, extensionsDir: Os.Path): String = {
   return extDirArg
 }
 
+def patchCodium(codium: Os.Path, anchor: String, sireumHome: String, isWin: B): Unit = {
+  println(s"Patching $codium ...")
+  var codiumContent = codium.read
+  val cis = conversions.String.toCis(codiumContent)
+  val i = ops.StringOps.stringIndexOfFrom(cis, conversions.String.toCis(anchor), 0)
+  codiumContent = s"${ops.StringOps.substring(cis, 0, i)}${if (isWin) "set" else "export"} SIREUM_HOME=$sireumHome${Os.lineSep}${ops.StringOps.substring(cis, i, cis.size)}"
+  codium.writeOver(codiumContent)
+  if (!isWin) {
+    codium.chmod("+x")
+  }
+  println()
+}
+
 def mac(): Unit = {
   val drop = cacheDir / s"VSCodium-darwin-${if (Os.isMacArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "mac"
   val vscodium = platform / "VSCodium.app"
   val ver = vscodium / "Contents" / "VER"
   var updated = F
+  val codium = vscodium / "Contents"/ "Resources" / "app" / "bin" / "codium"
   if (!ver.exists || ver.read != version) {
     downloadVSCodium(drop)
     vscodium.removeAll()
     println("Extracting VSCodium ...")
     drop.unzipTo(platform)
+    patchCodium(codium, "ELECTRON_RUN_AS_NODE=", "$(readlink -f `dirname ${BASH_SOURCE[0]}`/../../../../../../..)", F)
     proc"codesign --force --deep --sign - $vscodium".run()
     ver.write(version)
     println()
     updated = T
   }
-  val codium = vscodium / "Contents"/ "Resources" / "app" / "bin" / "codium"
   val extensionsDir: Os.Path = if (isInUserHome) {
     val d = platform / "codium-portable-data" / "extensions"
     d.mkdirAll()
@@ -207,6 +221,7 @@ def linux(isArm: B): Unit = {
   val vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
   var updated = F
+  val codium = vscodium / "bin" / "codium"
   if (!ver.exists || ver.read != version) {
     downloadVSCodium(drop)
     println("Extracting VSCodium ...")
@@ -217,11 +232,12 @@ def linux(isArm: B): Unit = {
     }
     vscodium.removeAll()
     vscodiumNew.moveTo(vscodium)
+    patchCodium(codium, "ELECTRON_RUN_AS_NODE=",
+      s"$$(readlink -f `dirname $${BASH_SOURCE[0]}`/../../../../../../..${if (isArm) "/.." else ""})", F)
     ver.write(version)
     println()
     updated = T
   }
-  val codium = vscodium / "bin" / "codium"
   val extensionsDir: Os.Path = if (isInUserHome) {
     val d = vscodium / "data" / "extensions"
     d.mkdirAll()
@@ -243,6 +259,7 @@ def win(): Unit = {
   val vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
   var updated = F
+  val codium = vscodium / "bin" / "codium.cmd"
   if (!ver.exists || ver.read != version) {
     downloadVSCodium(drop)
     val vscodiumNew = platform / "vscodium.new"
@@ -253,11 +270,11 @@ def win(): Unit = {
     }
     vscodium.removeAll()
     vscodiumNew.moveTo(vscodium)
+    patchCodium(codium, "\"%~dp0..", s"""set SIREUM_HOME="%~dp0../../../..${Os.lineSep}pushd %SIREUM_HOME%${Os.lineSep}set SIREUM_HOME=%CD%${Os.lineSep}popd""".stripMargin, T)
     ver.write(version)
     println()
     updated = T
   }
-  val codium = vscodium / "bin" / "codium.cmd"
   val extensionsDir: Os.Path = if (isInUserHome) {
     val d = vscodium / "data" / "extensions"
     d.mkdirAll()
