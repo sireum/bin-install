@@ -295,28 +295,6 @@ val sysIdeVersion = "0.6.2"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
 val sireumExtUrl = s"https://github.com/sireum/vscode-extension/releases/download/$sireumExtVersion/sireum-vscode-extension.vsix"
 val sireumExtDrop = s"sireum-vscode-extension-$sireumExtVersion.vsix"
-val extensions = ISZ(
-  "llvm-vs-code-extensions.vscode-clangd",
-  "mike-lischke.vscode-antlr4",
-  "mads-hartmann.bash-ide-vscode",
-  "dbaeumer.vscode-eslint",
-  "mhutchie.git-graph",
-  "ecmel.vscode-html-css",
-  "kofuk.hugo-utils",
-  "redhat.java",
-  "langium.langium-vscode",
-  "James-Yu.latex-workshop",
-  "jebbs.plantuml",
-  "esbenp.prettier-vscode",
-  "ms-python.python",
-  "rust-lang.rust-analyzer",
-  "scalameta.metals",
-  s"sensmetry.sysml-2ls@$sysIdeVersion",
-  "mshr-h.veriloghdl",
-  "redhat.vscode-xml",
-  "redhat.vscode-yaml",
-  "adamraichu.zip-viewer"
-)
 
 def gumboTokens(existingKeywords: HashSet[String]): ISZ[String] = {
   val f = Os.tempFix("GUMBO", ".tokens")
@@ -401,7 +379,7 @@ def downloadVSCodium(drop: Os.Path): Unit = {
   }
 }
 
-def installExtensions(codium: Os.Path, extensionsDir: Os.Path): String = {
+def installExtensions(codium: Os.Path, extensionsDir: Os.Path, extensions: ISZ[String]): String = {
   val extDirArg: String = if (isInUserHome) "" else s" --extensions-dir $extensionsDir"
   val drop = cacheDir / sireumExtDrop
   if (!drop.exists) {
@@ -437,7 +415,7 @@ def patchCodium(codium: Os.Path, anchor: String, sireumHome: String, isWin: B): 
   println()
 }
 
-def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]): Unit = {
+def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-darwin-${if (Os.isMacArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "mac"
   val vscodium = platform / "VSCodium.app"
@@ -473,7 +451,7 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]):
         d
       }
   }
-  val extDirArg = installExtensions(codium, extensionsDir)
+  val extDirArg = installExtensions(codium, extensionsDir, extensions)
   if (updated) {
     if (isInUserHome) {
       println(s"To launch VSCodium: open $vscodium")
@@ -483,7 +461,7 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]):
   }
 }
 
-def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]): Unit = {
+def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-linux-${if (isArm) "arm64" else "x64"}-$version.tar.gz"
   val platform: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val vscodium = platform / "vscodium"
@@ -524,13 +502,13 @@ def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Optio
         d
       }
   }
-  val extDirArg = installExtensions(codium, extensionsDir)
+  val extDirArg = installExtensions(codium, extensionsDir, extensions)
   if (updated) {
     println(s"To launch VSCodium: $codium$extDirArg")
   }
 }
 
-def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]): Unit = {
+def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-win32-${if (Os.isWinArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "win"
   val vscodium = platform / "vscodium"
@@ -570,7 +548,7 @@ def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path]):
         d
       }
   }
-  val extDirArg = installExtensions(codium, extensionsDir)
+  val extDirArg = installExtensions(codium, extensionsDir, extensions)
   if (updated) {
     println(s"To launch VSCodium: $codium$extDirArg")
   }
@@ -588,12 +566,12 @@ Cli(Os.pathSepChar).parseVscodium(Os.cliArgs, 0) match {
           Os.exit(-1)
         }
         val scripts: HashSSet[String] = HashSSet ++ (if (Os.isWin) ISZ[String]("code.cmd", "codium.cmd") else ISZ[String]("code", "codium"))
-        for (codium <- Os.Path.walk(p, F, F, (p: Os.Path) => scripts.contains(p.name)) if codiumOpt.isEmpty) {
+        for (codium <- Os.Path.walk(p, F, F, (f: Os.Path) => scripts.contains(f.name)) if codiumOpt.isEmpty) {
           codiumOpt = Some(codium)
-          extDirOpt = Some(Os.home / ".vscode" / "extensions")
+          extDirOpt = Some(Os.home / (if (ops.StringOps(codium.name).startsWith("code")) ".vscode" else ".vscode-oss") / "extensions")
         }
         if (codiumOpt.isEmpty) {
-          eprintln(s"Could not find VSCode/VSCodium script")
+          eprintln(st"Could not find ${(scripts, "/")} in $p".render)
           Os.exit(-2)
         }
       case _ =>
@@ -606,10 +584,10 @@ Cli(Os.pathSepChar).parseVscodium(Os.cliArgs, 0) match {
       case _ =>
     }
     Os.kind match {
-      case Os.Kind.Mac => mac(codiumOpt, extDirOpt)
-      case Os.Kind.Linux => linux(F, codiumOpt, extDirOpt)
-      case Os.Kind.LinuxArm => linux(T, codiumOpt, extDirOpt)
-      case Os.Kind.Win => win(codiumOpt, extDirOpt)
+      case Os.Kind.Mac => mac(codiumOpt, extDirOpt, o.extensions)
+      case Os.Kind.Linux => linux(F, codiumOpt, extDirOpt, o.extensions)
+      case Os.Kind.LinuxArm => linux(T, codiumOpt, extDirOpt, o.extensions)
+      case Os.Kind.Win => win(codiumOpt, extDirOpt, o.extensions)
       case _ =>
         eprintln("Unsupported platform")
         Os.exit(-1)
