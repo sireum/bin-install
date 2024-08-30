@@ -290,7 +290,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 val isInUserHome = ops.StringOps(s"${homeBin.up.canon}${Os.fileSep}").startsWith(Os.home.string)
 
 val version = "1.92.2.24228"
-val sireumExtVersion = "4.20240830.cce4a10"
+val sireumExtVersion = "4.20240830.64836af"
 val sysIdeVersion = "0.6.2"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
 val sireumExtUrl = s"https://github.com/sireum/vscode-extension/releases/download/$sireumExtVersion/sireum-vscode-extension.vsix"
@@ -387,12 +387,12 @@ def installExtensions(codium: Os.Path, extensionsDir: Os.Path, extensions: ISZ[S
     drop.downloadFrom(sireumExtUrl)
     println()
   }
-  proc"$codium --force$extDirArg --install-extension $drop".console.runCheck()
-  println()
   for (ext <- extensions) {
     proc"$codium --force$extDirArg --install-extension $ext".console.runCheck()
     println()
   }
+  proc"$codium --force$extDirArg --install-extension $drop".console.runCheck()
+  println()
   for (f <- extensionsDir.list if ops.StringOps(f.name).startsWith("sensmetry.sysml-")) {
     patchSysIDE(f)
   }
@@ -591,7 +591,7 @@ Cli(Os.pathSepChar).parseVscodium(Os.cliArgs, 0) match {
         extDirOpt = Some(ped)
       case _ =>
     }
-    val extensions = s"Sensmetry.sysml-2ls@$sysIdeVersion" +: o.extensions
+    val extensions = o.extensions :+ s"Sensmetry.sysml-2ls@$sysIdeVersion"
     Os.kind match {
       case Os.Kind.Mac => mac(codiumOpt, extDirOpt, extensions)
       case Os.Kind.Linux => linux(F, codiumOpt, extDirOpt, extensions)
