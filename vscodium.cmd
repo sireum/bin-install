@@ -290,7 +290,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 val isInUserHome = ops.StringOps(s"${homeBin.up.canon}${Os.fileSep}").startsWith(Os.home.string)
 
 val version = "1.92.2.24228"
-val sireumExtVersion = "4.20240828.9bcbe97"
+val sireumExtVersion = "4.20240830.cce4a10"
 val sysIdeVersion = "0.6.2"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
 val sireumExtUrl = s"https://github.com/sireum/vscode-extension/releases/download/$sireumExtVersion/sireum-vscode-extension.vsix"
@@ -418,11 +418,13 @@ def patchCodium(codium: Os.Path, anchor: String, sireumHome: String, isWin: B): 
 def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-darwin-${if (Os.isMacArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "mac"
-  val vscodium = platform / "VSCodium.app"
+  var vscodium = platform / "VSCodium.app"
   val ver = vscodium / "Contents" / "VER"
   var updated = F
   val codium: Os.Path = existingInstallOpt match {
-    case Some(p) => p
+    case Some(p) =>
+      vscodium = p.up.up.up.up.up.canon
+      p
     case _ =>
       val c = vscodium / "Contents"/ "Resources" / "app" / "bin" / "codium"
       if (!ver.exists || ver.read != version) {
@@ -430,14 +432,15 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
         vscodium.removeAll()
         println("Extracting VSCodium ...")
         drop.unzipTo(platform)
-        patchCodium(c, "ELECTRON_RUN_AS_NODE=", "$(readlink -f `dirname ${BASH_SOURCE[0]}`/../../../../../../..)", F)
-        proc"codesign --force --deep --sign - $vscodium".run()
         ver.write(version)
         println()
         updated = T
       }
       c
   }
+  patchCodium(codium, "ELECTRON_RUN_AS_NODE=", "$(readlink -f `dirname ${BASH_SOURCE[0]}`/../../../../../../..)", F)
+  proc"xattr -rd com.apple.quarantine $vscodium".run()
+  proc"codesign --force --deep --sign - $vscodium".run()
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
@@ -464,11 +467,13 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
 def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-linux-${if (isArm) "arm64" else "x64"}-$version.tar.gz"
   val platform: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
-  val vscodium = platform / "vscodium"
+  var vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
   var updated = F
   val codium: Os.Path = existingInstallOpt match {
-    case Some(p) => p
+    case Some(p) =>
+      vscodium = p.up.up.canon
+      p
     case _ =>
       val c = vscodium / "bin" / "codium"
       if (!ver.exists || ver.read != version) {
@@ -481,14 +486,14 @@ def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Optio
         }
         vscodium.removeAll()
         vscodiumNew.moveTo(vscodium)
-        patchCodium(c, "ELECTRON_RUN_AS_NODE=",
-          s"$$(readlink -f `dirname $${BASH_SOURCE[0]}`/../../../../../../..${if (isArm) "/.." else ""})", F)
         ver.write(version)
         println()
         updated = T
       }
       c
   }
+  patchCodium(codium, "ELECTRON_RUN_AS_NODE=",
+    s"$$(readlink -f `dirname $${BASH_SOURCE[0]}`/../../../../../../..${if (isArm) "/.." else ""})", F)
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
@@ -511,11 +516,13 @@ def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Optio
 def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], extensions: ISZ[String]): Unit = {
   val drop = cacheDir / s"VSCodium-win32-${if (Os.isWinArm) "arm64" else "x64"}-$version.zip"
   val platform = homeBin / "win"
-  val vscodium = platform / "vscodium"
+  var vscodium = platform / "vscodium"
   val ver = vscodium / "VER"
   var updated = F
   val codium: Os.Path = existingInstallOpt match {
-    case Some(p) => p
+    case Some(p) =>
+      vscodium = p.up.up.canon
+      p
     case _ =>
       val c =  vscodium / "bin" / "codium.cmd"
       if (!ver.exists || ver.read != version) {
@@ -528,13 +535,14 @@ def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
         }
         vscodium.removeAll()
         vscodiumNew.moveTo(vscodium)
-        patchCodium(c, "\"%~dp0..", s"""set SIREUM_HOME="%~dp0../../../..${Os.lineSep}pushd %SIREUM_HOME%${Os.lineSep}set SIREUM_HOME=%CD%${Os.lineSep}popd""".stripMargin, T)
         ver.write(version)
         println()
         updated = T
       }
       c
   }
+  patchCodium(codium, "\"%~dp0..",
+    s"""set SIREUM_HOME="%~dp0../../../..${Os.lineSep}pushd %SIREUM_HOME%${Os.lineSep}set SIREUM_HOME=%CD%${Os.lineSep}popd""".stripMargin, T)
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
@@ -583,11 +591,12 @@ Cli(Os.pathSepChar).parseVscodium(Os.cliArgs, 0) match {
         extDirOpt = Some(ped)
       case _ =>
     }
+    val extensions = s"Sensmetry.sysml-2ls@$sysIdeVersion" +: o.extensions
     Os.kind match {
-      case Os.Kind.Mac => mac(codiumOpt, extDirOpt, o.extensions)
-      case Os.Kind.Linux => linux(F, codiumOpt, extDirOpt, o.extensions)
-      case Os.Kind.LinuxArm => linux(T, codiumOpt, extDirOpt, o.extensions)
-      case Os.Kind.Win => win(codiumOpt, extDirOpt, o.extensions)
+      case Os.Kind.Mac => mac(codiumOpt, extDirOpt, extensions)
+      case Os.Kind.Linux => linux(F, codiumOpt, extDirOpt, extensions)
+      case Os.Kind.LinuxArm => linux(T, codiumOpt, extDirOpt, extensions)
+      case Os.Kind.Win => win(codiumOpt, extDirOpt, extensions)
       case _ =>
         eprintln("Unsupported platform")
         Os.exit(-1)
