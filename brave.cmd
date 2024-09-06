@@ -75,7 +75,7 @@ def linux(isArm: B): Unit = {
     download(drop)
     println("Extracting Brave Browser ...")
     val braveNew = platform / "brave.new"
-    drop.unTarGzTo(braveNew)
+    drop.unzipTo(braveNew)
     brave.removeAll()
     braveNew.moveTo(brave)
     ver.write(version)
