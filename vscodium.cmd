@@ -438,7 +438,7 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
       }
       c
   }
-  patchCodium(codium, "ELECTRON_RUN_AS_NODE=", "$(readlink -f `dirname ${BASH_SOURCE[0]}`/../../../../../../..)", F)
+  patchCodium(codium, "ELECTRON_RUN_AS_NODE=", "$(readlink -f `dirname $0`/../../../../../../..)", F)
   proc"xattr -rd com.apple.quarantine $vscodium".run()
   proc"codesign --force --deep --sign - $vscodium".run()
   val extensionsDir: Os.Path = extensionsDirOpt match {
@@ -493,7 +493,7 @@ def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Optio
       c
   }
   patchCodium(codium, "ELECTRON_RUN_AS_NODE=",
-    s"$$(readlink -f `dirname $${BASH_SOURCE[0]}`/../../../../../../..${if (isArm) "/.." else ""})", F)
+    s"$$(readlink -f `dirname $$0`/../../../..${if (isArm) "/.." else ""})", F)
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>

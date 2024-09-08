@@ -83,7 +83,7 @@ def linux(isArm: B): Unit = {
     updated = T
   }
   if (updated) {
-    println(s"To launch Brave Browser: ${brave / "bin" / "brave"}")
+    println(s"To launch Brave Browser: ${brave / "brave-browser"}")
   }
 }
 
@@ -104,9 +104,8 @@ def win(): Unit = {
     println()
     updated = T
   }
-  val codium = brave / "bin" / "codium.cmd"
   if (updated) {
-    println(s"To launch Brave Browser: ${brave / "bin" / "brave.exe"}")
+    println(s"To launch Brave Browser: ${brave / "brave.exe"}")
   }
 }
 
