@@ -289,7 +289,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 
 val isInUserHome = ops.StringOps(s"${homeBin.up.canon}${Os.fileSep}").startsWith(Os.home.string)
 
-val version = "1.92.2.24228"
+val version = "1.93.0.24253"
 val sireumExtVersion = "4.20240906.a77c60c"
 val sysIdeVersion = "0.6.2"
 val urlPrefix = s"https://github.com/VSCodium/vscodium/releases/download/$version"
