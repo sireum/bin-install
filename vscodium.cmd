@@ -542,7 +542,7 @@ def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
       c
   }
   patchCodium(codium, "\"%~dp0..",
-    s"""set SIREUM_HOME="%~dp0../../../..${Os.lineSep}pushd %SIREUM_HOME%${Os.lineSep}set SIREUM_HOME=%CD%${Os.lineSep}popd""".stripMargin, T)
+    s""""%~dp0..\\..\\..\\..${Os.lineSep}pushd %SIREUM_HOME%${Os.lineSep}set SIREUM_HOME=%CD%${Os.lineSep}popd""".stripMargin, T)
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
