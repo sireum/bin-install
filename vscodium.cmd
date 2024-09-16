@@ -407,7 +407,15 @@ def patchCodium(codium: Os.Path, anchor: String, sireumHome: String, isWin: B): 
   }
   println(s"Patching $codium ...")
   val i = ops.StringOps.stringIndexOfFrom(cis, conversions.String.toCis(anchor), 0)
-  codiumContent = s"${ops.StringOps.substring(cis, 0, i)}${if (isWin) "set" else "export"} SIREUM_HOME=$sireumHome${Os.lineSep}${ops.StringOps.substring(cis, i, cis.size)}"
+  val set: String = if (isWin) "set" else "export"
+  val javaHomeOpt: String = Os.kind match {
+    case Os.Kind.Mac => s"$set JAVA_HOME=$$SIREUM_HOME/bin/mac/java${Os.lineSep}"
+    case Os.Kind.Linux => s"$set JAVA_HOME=$$SIREUM_HOME/bin/linux/java${Os.lineSep}"
+    case Os.Kind.LinuxArm => s"$set JAVA_HOME=$$SIREUM_HOME/bin/linux/arm/java${Os.lineSep}"
+    case Os.Kind.Win => s"$set JAVA_HOME=%SIREUM_HOME%\\bin\\win\\java${Os.lineSep}"
+    case _ => ""
+  }
+  codiumContent = s"${ops.StringOps.substring(cis, 0, i)}$set SIREUM_HOME=$sireumHome${Os.lineSep}$javaHomeOpt${ops.StringOps.substring(cis, i, cis.size)}"
   codium.writeOver(codiumContent)
   if (!isWin) {
     codium.chmod("+x")
