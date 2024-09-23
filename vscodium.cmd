@@ -4,7 +4,7 @@ export SIREUM_HOME=$(cd -P "$(dirname "$0")/../.." && pwd -P)  #
 exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"           #
 :BOF
 setlocal
-set SIREUM_HOME=%~dp0../../
+set SIREUM_HOME=%~dp0..\..
 "%SIREUM_HOME%\sireum.bat" slang run %0 %*
 exit /B %errorlevel%
 ::!#*/
