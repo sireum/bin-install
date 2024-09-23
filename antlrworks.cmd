@@ -5,7 +5,7 @@ exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"           #
 :BOF
 setlocal
 set SIREUM_HOME=%~dp0..\..
-"%SIREUM_HOME%\sireum.bat" slang run %0 %*
+"%SIREUM_HOME%\bin\sireum.bat" slang run %0 %*
 exit /B %errorlevel%
 ::!#*/
 // #Sireum
