@@ -1,11 +1,11 @@
-::/*#! 2> /dev/null                                          #
-@ 2>/dev/null # 2>nul & echo off & goto BOF                  #
-export SIREUM_HOME=$(cd -P $(dirname "$0")/../.. && pwd -P)  #
-exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"         #
+::/*#! 2> /dev/null                                            #
+@ 2>/dev/null # 2>nul & echo off & goto BOF                    #
+export SIREUM_HOME=$(cd -P "$(dirname "$0")/../.." && pwd -P)  #
+exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"           #
 :BOF
 setlocal
-if not exist "%~dp0..\sireum.jar" call "%~dp0..\init.bat"
-"%~dp0..\sireum.bat" slang run "%0" %*
+set SIREUM_HOME=%~dp0../../
+"%SIREUM_HOME%\sireum.bat" slang run %0 %*
 exit /B %errorlevel%
 ::!#*/
 // #Sireum

@@ -1,23 +1,11 @@
-::/*#! 2> /dev/null                                                                                         #
-@ 2>/dev/null # 2>nul & echo off & goto BOF                                                                 #
-export SIREUM_HOME=$(cd -P $(dirname "$0")/../.. && pwd -P)                                                 #
-if [ -f "$0.com" ] && [ "$0.com" -nt "$0" ]; then                                                           #
-  exec "$0.com" "$@"                                                                                        #
-else                                                                                                        #
-  rm -fR "$0.com"                                                                                           #
-  exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"                                                      #
-fi                                                                                                          #
+::/*#! 2> /dev/null                                            #
+@ 2>/dev/null # 2>nul & echo off & goto BOF                    #
+export SIREUM_HOME=$(cd -P "$(dirname "$0")/../.." && pwd -P)  #
+exec "${SIREUM_HOME}/bin/sireum" slang run "$0" "$@"           #
 :BOF
 setlocal
-set NEWER=False
-if exist %~dpnx0.com for /f %%i in ('powershell -noprofile -executionpolicy bypass -command "(Get-Item %~dpnx0.com).LastWriteTime -gt (Get-Item %~dpnx0).LastWriteTime"') do @set NEWER=%%i
-if "%NEWER%" == "True" goto native
-del "%~dpnx0.com" > nul 2>&1
-if not exist "%~dp0..\sireum.jar" call "%~dp0..\init.bat"
-"%~dp0..\sireum.bat" slang run "%0" %*
-exit /B %errorlevel%
-:native
-%~dpnx0.com %*
+set SIREUM_HOME=%~dp0../../
+"%SIREUM_HOME%\sireum.bat" slang run %0 %*
 exit /B %errorlevel%
 ::!#*/
 // #Sireum
