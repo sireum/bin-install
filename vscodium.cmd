@@ -440,7 +440,7 @@ def mac(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
-      if (isInUserHome) {
+      if (Os.env("GITHUB_ACTION").nonEmpty || isInUserHome) {
         val d = platform / "codium-portable-data" / "extensions"
         d.mkdirAll()
         d
@@ -493,7 +493,7 @@ def linux(isArm: B, existingInstallOpt: Option[Os.Path], extensionsDirOpt: Optio
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
-      if (isInUserHome) {
+      if (Os.env("GITHUB_ACTION").nonEmpty || isInUserHome) {
         val d = vscodium / "data" / "extensions"
         d.mkdirAll()
         d
@@ -542,7 +542,7 @@ def win(existingInstallOpt: Option[Os.Path], extensionsDirOpt: Option[Os.Path], 
   val extensionsDir: Os.Path = extensionsDirOpt match {
     case Some(ed) => ed
     case _ =>
-      if (isInUserHome) {
+      if (Os.env("GITHUB_ACTION").nonEmpty || isInUserHome) {
         val d = vscodium / "data" / "extensions"
         d.mkdirAll()
         d
