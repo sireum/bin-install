@@ -174,12 +174,7 @@ def win(): Unit = {
   println(s"Extracting $cache ...")
   clionDir.mkdirAll()
 
-  if (Os.isWinArm) {
-    init.install7z()
-    proc"${homeBin / "win" / "7z" / "7z.exe"} x $cache".at(clionDir).runCheck()
-  } else {
-    cache.unzipTo(clionDir)
-  }
+  cache.unzipTo(clionDir)
 
   deleteSources(clionDir)
 

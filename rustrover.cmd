@@ -174,12 +174,7 @@ def win(): Unit = {
   println(s"Extracting $cache ...")
   rustRoverDir.mkdirAll()
 
-  if (Os.isWinArm) {
-    init.install7z()
-    proc"${homeBin / "win" / "7z" / "7z.exe"} x $cache".at(rustRoverDir).runCheck()
-  } else {
-    cache.unzipTo(rustRoverDir)
-  }
+  cache.unzipTo(rustRoverDir)
 
   deleteSources(rustRoverDir)
 
