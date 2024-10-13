@@ -34,6 +34,26 @@ def download(name: String, drop: Os.Path): Unit = {
 
 def install(): Unit = {
   val cosmos = homeBin / "cosmos"
+
+  def updateBin(): Unit = {
+    for (p <- (cosmos / "bin").list if p.ext != "elf" && p.ext != "macho" && p.ext != "c" && p.ext != "exe") {
+      if (Os.isWin) {
+        if (!(p.up / s"${p.name}.exe").exists) {
+          val name: String = if (p.ext == "ape") ops.StringOps(p.name).substring(0, p.name.size - 4) else p.name
+          val exe = s"$name.exe"
+          p.moveTo(p.up / exe)
+          if (name == "curl") {
+            (p.up / name).mklink(Os.path("C:\\Windows\\System32\\curl.exe"))
+          } else {
+            (p.up / name).mklink(p.up / exe)
+          }
+        }
+      } else {
+        p.chmod("+x")
+      }
+    }
+  }
+
   val ver = cosmos / "VER"
   if (ver.exists && ver.read == version) {
     return
@@ -41,24 +61,20 @@ def install(): Unit = {
   cosmos.removeAll()
   cosmos.mkdirAll()
 
-  println("Downloading Cosmos ...")
-  download(cosmosDropName, cacheDir / cosmosDropName)
-  download("web.zip", cacheDir / cosmosWebDropName)
-  println()
+  if (!(cacheDir / cosmosDropName).exists) {
+    println("Downloading Cosmos ...")
+    download(cosmosDropName, cacheDir / cosmosDropName)
+    download("web.zip", cacheDir / cosmosWebDropName)
+    println()
+  }
 
   println("Extracting Cosmos ...")
   (cacheDir / cosmosDropName).unzipTo(cosmos)
+  updateBin()
 
   proc"${cosmos / "bin" / (if (Os.isWin) "unzip.exe" else "unzip")} -n ${cacheDir / cosmosWebDropName}".script.at(cosmos).runCheck()
+  updateBin()
 
-  for (p <- (cosmos / "bin").list if p.ext != "elf" && p.ext != "macho" && p.ext != "c") {
-    if (Os.isWin) {
-      val name: String = if (p.ext == "ape") ops.StringOps(p.name).substring(0, p.name.size - 4) else p.name
-      p.moveTo(p.up / s"$name.exe")
-    } else {
-      p.chmod("+x")
-    }
-  }
   println()
 
   ver.writeOver(version)
