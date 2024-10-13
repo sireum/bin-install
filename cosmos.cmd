@@ -49,7 +49,7 @@ def install(): Unit = {
   println("Extracting Cosmos ...")
   (cacheDir / cosmosDropName).unzipTo(cosmos)
 
-  proc"${cosmos / "bin" / "unzip"} -n ${cacheDir / cosmosWebDropName}".script.at(cosmos).runCheck()
+  proc"${cosmos / "bin" / (if (Os.isWin) "unzip.exe" else "unzip")} -n ${cacheDir / cosmosWebDropName}".script.at(cosmos).runCheck()
 
   for (p <- (cosmos / "bin").list if p.ext != "elf" && p.ext != "macho" && p.ext != "c") {
     if (Os.isWin) {
