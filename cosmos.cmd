@@ -24,10 +24,9 @@ val urlPrefix = s"https://cosmo.zip/pub/cosmos/zip/"
 val cosmosDropName = s"cosmos-$version.zip"
 val cosmosWebDropName = s"cosmos-web-$version.zip"
 
-def download(title: String, name: String, drop: Os.Path): Unit = {
+def download(name: String, drop: Os.Path): Unit = {
   val url = s"$urlPrefix/$name"
   if (!drop.exists) {
-    println(s"Downloading $title ...")
     drop.downloadFrom(url)
     println()
   }
@@ -42,11 +41,16 @@ def install(): Unit = {
   cosmos.removeAll()
   cosmos.mkdirAll()
 
-  download("Cosmos", cosmosDropName, cacheDir / cosmosDropName)
-  download("Cosmos Web", "web.zip", cacheDir / cosmosWebDropName)
+  println("Downloading Cosmos ...")
+  download(cosmosDropName, cacheDir / cosmosDropName)
+  download("web.zip", cacheDir / cosmosWebDropName)
+  println()
 
   println("Extracting Cosmos ...")
   (cacheDir / cosmosDropName).unzipTo(cosmos)
+
+  proc"${cosmos / "bin" / "unzip"} -n ${cacheDir / cosmosWebDropName}".script.at(cosmos).runCheck()
+
   for (p <- (cosmos / "bin").list if p.ext != "elf" && p.ext != "macho" && p.ext != "c") {
     if (Os.isWin) {
       val name: String = if (p.ext == "ape") ops.StringOps(p.name).substring(0, p.name.size - 4) else p.name
@@ -56,8 +60,6 @@ def install(): Unit = {
     }
   }
   println()
-
-  proc"${cosmos / "bin" / "unzip"} -n ${cacheDir / cosmosWebDropName}".script.at(cosmos).runCheck()
 
   ver.writeOver(version)
   
