@@ -36,19 +36,15 @@ def install(): Unit = {
   val cosmos = homeBin / "cosmos"
 
   def updateBin(): Unit = {
-    for (p <- (cosmos / "bin").list if p.ext != "elf" && p.ext != "macho" && p.ext != "c" && p.ext != "exe") {
-      if (Os.isWin) {
-        if (!(p.up / s"${p.name}.exe").exists) {
-          val name: String = if (p.ext == "ape") ops.StringOps(p.name).substring(0, p.name.size - 4) else p.name
-          val exe = s"$name.exe"
-          p.moveTo(p.up / exe)
-          if (name == "curl") {
-            (p.up / name).mklink(Os.path("C:\\Windows\\System32\\curl.exe"))
-          } else {
-            (p.up / name).mklink(p.up / exe)
-          }
-        }
-      } else {
+    if (Os.isWin) {
+      (cosmos / "bin" / "curl").removeAll()
+      (cosmos / "bin" / "curl").mklink(Os.path("C:\\Windows\\System32\\curl.exe"))
+      (cosmos / "bin" / "bash").moveTo(cosmos / "bin" / "bash.exe")
+      (cosmos / "bin" / "bash").mklink(cosmos / "bin" / "bash.exe")
+      (cosmos / "bin" / "zsh").moveTo(cosmos / "bin" / "zsh.exe")
+      (cosmos / "bin" / "zsh").mklink(cosmos / "bin" / "zsh.exe")
+    } else {
+      for (p <- (cosmos / "bin").list) {
         p.chmod("+x")
       }
     }
