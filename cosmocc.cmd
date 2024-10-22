@@ -23,14 +23,6 @@ val version = "3.9.4"
 val urlPrefix = s"https://github.com/jart/cosmopolitan/releases/download/$version"
 val cosmoccDropName = s"cosmocc-$version.zip"
 
-def download(drop: Os.Path): Unit = {
-  val url = s"$urlPrefix/${drop.name}"
-  if (!drop.exists) {
-    drop.downloadFrom(url)
-    println()
-  }
-}
-
 def install(): Unit = {
   val cosmocc = homeBin / "cosmocc"
 
@@ -44,7 +36,8 @@ def install(): Unit = {
   val cosmoccDrop = cacheDir / cosmoccDropName
   if (!cosmoccDrop.exists) {
     println(s"Downloading cosmocc $version ...")
-    download(cosmoccDrop)
+    val url = s"$urlPrefix/${cosmoccDrop.name}"
+    cosmoccDrop.downloadFrom(url)
     println()
   }
 
