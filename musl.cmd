@@ -21,7 +21,6 @@ def install(): Unit = {
   val binPlatform: Os.Path = Os.kind match {
     case Os.Kind.Linux => homeBin / "linux"
     case Os.Kind.LinuxArm => homeBin / "linux" / "arm"
-    case Os.Kind.Mac => homeBin / "mac"
     case _ =>
       println("musl-libc can only be installed in Linux")
       return
