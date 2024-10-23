@@ -25,7 +25,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 }
 
 def ccl(p: String): Unit = {
-  val cclVersion = "1.12.1"
+  val cclVersion = "1.13"
   val cclUrlPrefix = s"https://github.com/Clozure/ccl/releases/download/v$cclVersion/"
   val cclBundleMap: Map[String, String] = Map.empty[String, String] ++ ISZ(
     "linux" ~> s"ccl-$cclVersion-linuxx86.tar.gz",
@@ -67,7 +67,7 @@ def ccl(p: String): Unit = {
 def acl2(p: String): Unit = {
   ccl(p)
 
-  val acl2Version = "8.5"
+  val acl2Version = "8.6"
 
   val acl2UrlPrefix = s"https://github.com/acl2-devel/acl2-devel/releases/download/$acl2Version/"
 
