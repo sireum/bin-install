@@ -19,7 +19,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-val version = "3.9.4"
+val version = Sireum.versions.get("org.sireum.version.cosmocc").get
 val urlPrefix = s"https://github.com/jart/cosmopolitan/releases/download/$version"
 val cosmoccDropName = s"cosmocc-$version.zip"
 
