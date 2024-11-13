@@ -16,7 +16,7 @@ val url = s"https://download.jetbrains.com/rustrover"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val rustRoverVersion = "2024.2.5"
+val rustRoverVersion = "243.21565.136"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("lsp4ij", "rust", "toml", "zigbrains")
 val init = Init(home, Os.kind, Sireum.versions)
 val rustRoverInstallVersion: String = st"$rustRoverVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.version, "-")}".render
@@ -84,14 +84,16 @@ def mac(): Unit = {
   if (rustRoverDir.exists) {
     rustRoverDir.removeAll()
   }
+  rustRoverDir.mkdirAll()
 
   println(s"Extracting $cache ...")
   Os.proc(ISZ("hdiutil", "attach", cache.string)).runCheck()
-  val dirPath = Os.path("/Volumes/RustRover")
-  val appPath = dirPath / "RustRover.app"
-  rustRoverDir.mkdirAll()
-  appPath.copyTo(rustRoverAppDir)
-  Os.proc(ISZ("hdiutil", "eject", dirPath.string)).runCheck()
+  for (dirPath <- Os.path("/Volumes").list if ops.StringOps(dirPath.name).startsWith("RustRover")) {
+    for (p <- dirPath.list if ops.StringOps(p.name).startsWith("RustRover")) {
+      p.copyTo(rustRoverAppDir)
+    }
+    Os.proc(ISZ("hdiutil", "eject", dirPath.string)).runCheck()
+  }
 
   deleteSources(rustRoverDir)
 

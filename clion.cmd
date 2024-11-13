@@ -16,7 +16,7 @@ val url = s"https://download.jetbrains.com/cpp"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val clionVersion = "2024.2.3"
+val clionVersion = "243.21565.198"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("lsp4ij", "rust", "toml", "zigbrains")
 val init = Init(home, Os.kind, Sireum.versions)
 val clionInstallVersion: String = st"$clionVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.version, "-")}".render
@@ -84,14 +84,16 @@ def mac(): Unit = {
   if (clionDir.exists) {
     clionDir.removeAll()
   }
+  clionDir.mkdirAll()
 
   println(s"Extracting $cache ...")
   Os.proc(ISZ("hdiutil", "attach", cache.string)).runCheck()
-  val dirPath = Os.path("/Volumes/CLion")
-  val appPath = dirPath / "CLion.app"
-  clionDir.mkdirAll()
-  appPath.copyTo(clionAppDir)
-  Os.proc(ISZ("hdiutil", "eject", dirPath.string)).runCheck()
+  for (dirPath <- Os.path("/Volumes").list if ops.StringOps(dirPath.name).startsWith("CLion")) {
+    for (p <- dirPath.list if ops.StringOps(p.name).startsWith("CLion")) {
+      p.copyTo(clionAppDir)
+    }
+    Os.proc(ISZ("hdiutil", "eject", dirPath.string)).runCheck()
+  }
 
   deleteSources(clionDir)
 
@@ -134,7 +136,9 @@ def linux(isArm: B): Unit = {
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  (platformDir / s"clion-$clionVersion").moveTo(clionDir)
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("clion-")) {
+    p.moveTo(clionDir)
+  }
 
   deleteSources(clionDir)
 
