@@ -358,20 +358,6 @@ import Cli._
 val homeBin = Os.slashDir.up.canon
 val sireum = homeBin / (if (Os.isWin) "sireum.bat" else "sireum")
 
-/*
-Os.prop("os.arch") match {
-  case Some(v) =>
-    if (v == "aarch64" || ops.StringOps(v).startsWith("armv")) {
-      eprintln(
-        st"""FMIDE is based on OSATE v2.10.x however ARM architectures require OSATE 2.11+. Sireum Phantom can be used
-            |to install the Sireum OSATE plugins into a more recent version of OSATE. For more information invoke
-            |
-            |  sireum hamr phantom -h""".render)
-      Os.exit(1)
-    }
-  case _ =>
-}
-*/
 def parseCliArgs(): Cli.FmideOption = {
   Cli(Os.pathSepChar).parseFmide(Os.cliArgs, 0) match {
     case Some(o: Cli.FmideOption) =>
@@ -409,12 +395,6 @@ val agree = Feature(
   "com.rockwellcollins.atc.agree.feature.feature.group",
   "https://raw.githubusercontent.com/loonwerks/AGREE-Updates/master",
   option.agree.get,
-  Some("/releases"))
-
-val jkind = Feature(
-  "com.rockwellcollins.atc.agree.feature.feature.group",
-  "https://raw.githubusercontent.com/loonwerks/AGREE-Updates/master",
-  option.jkind.get,
   Some("/releases"))
 
 val resolute = Feature(
@@ -529,6 +509,11 @@ if (ver.exists) {
     }
   }
 } else {
+  if (fmideDir.exists && option.existingInstall.isEmpty) {
+    println(s"The following appears to be an invalid FMIDE installation so replacing it with an OSATE ${option.osate.get} based version")
+    println(s"  ${fmideDir.value}")
+    fmideDir.removeAll()
+  }
   println(s"Installing ${installKind} (this will take a while) ...")
 }
 var env = ISZ[(String, String)]()
