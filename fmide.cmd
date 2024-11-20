@@ -47,13 +47,7 @@ import Cli._
     val help =
       st"""FMIDE Installer
           |
-          |Usage: ${st"""
-                  |<option>* [ release | latest ]
-                  |
-                  |'release' installs the versions of OSATE and FMIDE plugins specified
-                  |by their respective options.  'latest' installs the most recent
-                  |releases of the plugins into the OSATE version specified via
-                  |the 'osate' option or 'existing-install' option.""".render}
+          |Usage: <option>*
           |
           |Available Options:
           |    --awas               AWAS version (expects a string; default is
@@ -519,6 +513,20 @@ if (ver.exists) {
     Os.exit(0)
   } else {
     println(s"Version differences detected, updating ${installKind} (this will take a while) ...")
+
+    if (option.existingInstall.isEmpty) {
+      ver.properties.get("osate") match {
+        case Some(o) =>
+          if (o != option.osate.get) {
+            println(s"Updating FMIDE to an OSATE ${option.osate.get} version ...")
+            fmideDir.removeAll()
+          }
+        case _ =>
+          println(s"The following appears to be an older FMIDE installation so replacing it with an OSATE ${option.osate.get} based version")
+          println(s"  ${fmideDir.value}")
+          fmideDir.removeAll()
+      }
+    }
   }
 } else {
   println(s"Installing ${installKind} (this will take a while) ...")

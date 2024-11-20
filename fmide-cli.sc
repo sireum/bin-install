@@ -5,14 +5,7 @@ import org.sireum.cli.CliOpt._
 // the usage field will be placed inside a ST so to get newlines that don't have large
 // indentations we need to nest another ST inside that.
 val tqs: String = "\"\"\""
-val usage: String =
-  st"""$${st$tqs
-      ||<option>* [ release | latest ]
-      ||
-      ||'release' installs the versions of OSATE and FMIDE plugins specified
-      ||by their respective options.  'latest' installs the most recent
-      ||releases of the plugins into the OSATE version specified via
-      ||the 'osate' option or 'existing-install' option.$tqs.render}""".render
+val usage: String ="<option>*"
 
 val fmideTool: Tool = Tool(
   name = "fmide",
