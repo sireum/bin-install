@@ -12,9 +12,9 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val ocamlVersion = "4.14.1"
-val opamVersion = "2.2.1"
-val duneVersion = "3.16.0"
+val ocamlVersion = "4.14.2"
+val opamVersion = "2.3.0"
+val duneVersion = "3.16.1"
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
