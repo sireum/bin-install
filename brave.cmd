@@ -19,7 +19,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-val version = "1.75.181"
+val version = "1.76.73"
 val urlPrefix = s"https://github.com/brave/brave-browser/releases/download/v$version/"
 
 def download(drop: Os.Path): Unit = {
