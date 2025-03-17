@@ -11,7 +11,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val version = "1.5.6"
+val version = "1.5.7"
 
 val homeBin = Os.slashDir.up.canon
 
