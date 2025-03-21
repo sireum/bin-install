@@ -11,7 +11,12 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val version = "1.85.0"
+var version: String = "1.85.0"
+
+Os.cliArgs match {
+  case ISZ(v) => version = v
+  case _ =>
+}
 
 val homeBin: Os.Path = Os.slashDir.up.canon
 val (homeBinPlatform, rustupInitUrl): (Os.Path, String) = Os.kind match {
