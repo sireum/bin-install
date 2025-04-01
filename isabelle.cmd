@@ -12,7 +12,7 @@ exit /B %errorlevel%
 import org.sireum._
 
 
-val version = "2024"
+val version = "2025"
 val homeBin: Os.Path = Os.slashDir.up.canon
 
 val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
