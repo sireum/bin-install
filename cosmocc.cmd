@@ -42,7 +42,7 @@ def install(): Unit = {
   }
 
   println(s"Extracting cosmocc $version ...")
-  if (Os.isLinux || Os.isLinuxArm) {
+  if (Os.isLinux) {
     proc"unzip -qq $cosmoccDrop".at(cosmocc).runCheck()
   } else {
     proc"tar xf $cosmoccDrop".at(cosmocc).runCheck()
