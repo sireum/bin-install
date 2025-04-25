@@ -471,6 +471,7 @@ val fmideDir: Os.Path =
     Os.kind match {
       case Os.Kind.Mac => homeBin / "mac" / "fmide.app"
       case Os.Kind.Linux => homeBin / "linux" / "fmide"
+      case Os.Kind.LinuxArm => homeBin / "linux" / "arm" / "fmide"
       case Os.Kind.Win => homeBin / "win" / "fmide"
       case _ =>
         eprintln("Unsupported operating system")
