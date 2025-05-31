@@ -19,7 +19,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-val version = "0.14.0"
+val version = "0.14.1"
 val urlPrefix = s"https://ziglang.org/builds"
 val (os, arch, binPlatform): (String, String, Os.Path) = Os.kind match {
   case Os.Kind.Mac => if (Os.isMacArm) ("macos", "aarch64", homeBin / "mac") else ("macos", "x86_64", homeBin / "mac")
