@@ -51,11 +51,11 @@ import Cli._
           |
           |Available Options:
           |    --awas               AWAS version (expects a string; default is
-          |                           "1.2025.03090911.ff179091")
+          |                           "1.2025.06020757.f5a533c1")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
-          |                           "1.2025.04121759.d7c92769")
+          |                           "1.2025.06020757.f5a533c1")
           |    --hamr               Sireum HAMR version (expects a string; default is
-          |                           "1.2025.03090911.ff179091")
+          |                           "1.2025.06020757.f5a533c1")
           |    --agree              AGREE version (expects a string; default is "2.11.0")
           |    --briefcase          BriefCASE version (expects a string; default is
           |                           "0.9.0")
@@ -75,9 +75,9 @@ import Cli._
           |-v, --verbose            Verbose output
           |    --verbose+           Increased verbose output""".render
 
-    var awas: Option[String] = Some("1.2025.03090911.ff179091")
-    var gumbo: Option[String] = Some("1.2025.04121759.d7c92769")
-    var hamr: Option[String] = Some("1.2025.03090911.ff179091")
+    var awas: Option[String] = Some("1.2025.06020757.f5a533c1")
+    var gumbo: Option[String] = Some("1.2025.06020757.f5a533c1")
+    var hamr: Option[String] = Some("1.2025.06020757.f5a533c1")
     var agree: Option[String] = Some("2.11.0")
     var briefcase: Option[String] = Some("0.9.0")
     var jkind: Option[String] = Some("4.5.0")
