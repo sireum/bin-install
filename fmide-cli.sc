@@ -16,11 +16,11 @@ val fmideTool: Tool = Tool(
   usageDescOpt = None(),
   opts = ISZ(
     Opt(name = "awas", longKey = "awas", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2025.06020757.f5a533c1")), description = "AWAS version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2025.06160727.42c86446")), description = "AWAS version"),
     Opt(name = "gumbo", longKey = "gumbo", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("1.2025.06020757.f5a533c1")), description = "Sireum GUMBO version"),
     Opt(name = "hamr", longKey = "hamr", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2025.06020757.f5a533c1")), description = "Sireum HAMR version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2025.06160727.42c86446")), description = "Sireum HAMR version"),
     Opt(name = "agree", longKey = "agree", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("2.11.0")), description = "AGREE version"),
     Opt(name = "briefcase", longKey = "briefcase", shortKey = None(),
