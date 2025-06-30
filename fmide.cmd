@@ -51,21 +51,21 @@ import Cli._
           |
           |Available Options:
           |    --awas               AWAS version (expects a string; default is
-          |                           "1.2025.06160727.42c86446")
+          |                           "1.2025.06251058.ede8a8fb")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
           |                           "1.2025.06020757.f5a533c1")
           |    --hamr               Sireum HAMR version (expects a string; default is
-          |                           "1.2025.06160727.42c86446")
-          |    --agree              AGREE version (expects a string; default is "2.11.0")
+          |                           "1.2025.06251058.ede8a8fb")
+          |    --agree              AGREE version (expects a string; default is "2.11.2")
           |    --briefcase          BriefCASE version (expects a string; default is
-          |                           "0.9.0")
-          |    --jkind              JKind version (expects a string; default is "4.5.0")
+          |                           "0.9.2")
+          |    --jkind              JKind version (expects a string; default is "4.5.2")
           |    --resolute           Resolute version (expects a string; default is
           |                           "4.1.100")
           |    --osate              OSATE version (expects a string; default is
-          |                           "2.13.0-vfinal")
+          |                           "2.14.0-vfinal")
           |    --eclipse            Eclipse release version (expects a string; default is
-          |                           "2023-03")
+          |                           "2023-12")
           |-h, --help               Display this information
           |
           |Installation Options:
@@ -75,15 +75,15 @@ import Cli._
           |-v, --verbose            Verbose output
           |    --verbose+           Increased verbose output""".render
 
-    var awas: Option[String] = Some("1.2025.06160727.42c86446")
+    var awas: Option[String] = Some("1.2025.06251058.ede8a8fb")
     var gumbo: Option[String] = Some("1.2025.06020757.f5a533c1")
-    var hamr: Option[String] = Some("1.2025.06160727.42c86446")
-    var agree: Option[String] = Some("2.11.0")
-    var briefcase: Option[String] = Some("0.9.0")
-    var jkind: Option[String] = Some("4.5.0")
+    var hamr: Option[String] = Some("1.2025.06251058.ede8a8fb")
+    var agree: Option[String] = Some("2.11.2")
+    var briefcase: Option[String] = Some("0.9.2")
+    var jkind: Option[String] = Some("4.5.2")
     var resolute: Option[String] = Some("4.1.100")
-    var osate: Option[String] = Some("2.13.0-vfinal")
-    var eclipse: Option[String] = Some("2023-03")
+    var osate: Option[String] = Some("2.14.0-vfinal")
+    var eclipse: Option[String] = Some("2023-12")
     var existingInstall: Option[String] = None[String]()
     var verbose: B = false
     var verbosePlus: B = false

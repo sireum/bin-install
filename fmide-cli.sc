@@ -16,23 +16,23 @@ val fmideTool: Tool = Tool(
   usageDescOpt = None(),
   opts = ISZ(
     Opt(name = "awas", longKey = "awas", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2025.06160727.42c86446")), description = "AWAS version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2025.06251058.ede8a8fb")), description = "AWAS version"),
     Opt(name = "gumbo", longKey = "gumbo", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("1.2025.06020757.f5a533c1")), description = "Sireum GUMBO version"),
     Opt(name = "hamr", longKey = "hamr", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2025.06160727.42c86446")), description = "Sireum HAMR version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2025.06251058.ede8a8fb")), description = "Sireum HAMR version"),
     Opt(name = "agree", longKey = "agree", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("2.11.0")), description = "AGREE version"),
+      tpe = Type.Str(sep = None(), default = Some("2.11.2")), description = "AGREE version"),
     Opt(name = "briefcase", longKey = "briefcase", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("0.9.0")), description = "BriefCASE version"),
+      tpe = Type.Str(sep = None(), default = Some("0.9.2")), description = "BriefCASE version"),
     Opt(name = "jkind", longKey = "jkind", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("4.5.0")), description = "JKind version"),
+      tpe = Type.Str(sep = None(), default = Some("4.5.2")), description = "JKind version"),
     Opt(name = "resolute", longKey = "resolute", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("4.1.100")), description = "Resolute version"),
     Opt(name = "osate", longKey = "osate", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("2.13.0-vfinal")), description = "OSATE version"),
+      tpe = Type.Str(sep = None(), default = Some("2.14.0-vfinal")), description = "OSATE version"),
     Opt(name = "eclipse", longKey = "eclipse", shortKey = None(),
-        tpe = Type.Str(sep = None(), default = Some("2023-03")), description = "Eclipse release version")
+        tpe = Type.Str(sep = None(), default = Some("2023-12")), description = "Eclipse release version")
   ),
   groups = ISZ(
     OptGroup(name = "Installation", opts = ISZ(
