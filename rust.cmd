@@ -11,7 +11,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-var version: String = "1.88.0"
+var version: String = "1.89.0"
 
 Os.cliArgs match {
   case ISZ(v) => version = v
