@@ -15,16 +15,11 @@ val homeBin = Os.slashDir.up.canon
 val coqVersion = "8.20.0"
 
 val (cores, isIde): (String, B) = Os.cliArgs match {
-  case ISZ(n) => (Z(n).getOrElse(Os.numOfProcessors).string, F)
   case ISZ(string"ide") => (Os.numOfProcessors.string, T)
+  case ISZ(n) => (Z(n).getOrElse(Os.numOfProcessors).string, F)
   case ISZ(n, string"ide") => (Z(n).getOrElse(Os.numOfProcessors).string, T)
   case ISZ(string"ide", n) => (Z(n).getOrElse(Os.numOfProcessors).string, T)
   case _ => (Os.numOfProcessors.string, F)
-}
-
-val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
-  case Some(dir) => Os.path(dir)
-  case _ => Os.home / "Downloads" / "sireum"
 }
 
 def coq(dir: Os.Path): Unit = {
@@ -35,7 +30,7 @@ def coq(dir: Os.Path): Unit = {
     Os.proc(ISZ(opam, "pin", s"--root=$dir", "remove", s"coqide", "-y")).runCheck()
   }
   Os.proc(ISZ(opam, "pin", s"--root=$dir", "remove", s"coq", "-y")).runCheck()
-  Os.proc(ISZ(opam, "install", s"--root=$dir", "--no-self-upgrade", s"coq$variant=$coqVersion", "-y", "-j", cores)).console.runCheck()
+  Os.proc(ISZ(opam, "install", s"--root=$dir", "--no-self-upgrade", "--confirm-level=unsafe-yes", s"coq$variant=$coqVersion", "-y", "-j", cores)).console.runCheck()
   Os.proc(ISZ(opam, "pin", s"--root=$dir", "add", s"coq", s"$coqVersion", "-y")).runCheck()
   if (isIde) {
     Os.proc(ISZ(opam, "pin", s"--root=$dir", "add", s"coqide", s"$coqVersion", "-y")).runCheck()
