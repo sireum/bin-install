@@ -19,8 +19,9 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
-val version = "0.14.1"
-val urlPrefix = s"https://ziglang.org/builds"
+val version = "0.15.1"
+
+val urlPrefix = s"https://ziglang.org/download"
 val (os, arch, binPlatform): (String, String, Os.Path) = Os.kind match {
   case Os.Kind.Mac => if (Os.isMacArm) ("macos", "aarch64", homeBin / "mac") else ("macos", "x86_64", homeBin / "mac")
   case Os.Kind.Win => if (Os.isWinArm) ("windows", "aarch64", homeBin / "win") else ("windows", "x86_64", homeBin / "win")
@@ -28,7 +29,7 @@ val (os, arch, binPlatform): (String, String, Os.Path) = Os.kind match {
   case _ =>
     halt("Unsupported platform")
 }
-val zigDropName = s"zig-$os-$arch-$version.${if (Os.isWin) "zip" else "tar.xz"}"
+val zigDropName = s"zig-$arch-$os-$version.${if (Os.isWin) "zip" else "tar.xz"}"
 
 def install(): Unit = {
   val zig = binPlatform / "zig"
@@ -42,8 +43,8 @@ def install(): Unit = {
 
   val zigDrop = cacheDir / zigDropName
   if (!zigDrop.exists) {
-    println(s"Downloading Zig $version ...")
-    val url = s"$urlPrefix/${zigDrop.name}"
+    val url = s"$urlPrefix/$version/${zigDrop.name}"
+    println(s"Downloading Zig $version...")
     zigDrop.downloadFrom(url)
     println()
   }
