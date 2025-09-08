@@ -12,7 +12,7 @@ exit /B %errorlevel%
 import org.sireum._
 
 val homeBin = Os.slashDir.up.canon
-val compCertVersion = "3.15" // see: https://github.com/coq/opam/tree/master/released/packages/coq-compcert
+val compCertVersion = "3.16" // see: https://github.com/coq/opam/tree/master/released/packages/coq-compcert
 
 val cores: String = Os.cliArgs match {
   case ISZ(n) => Z(n).getOrElse(Os.numOfProcessors).string
@@ -55,7 +55,7 @@ def install(platformDir: Os.Path): Unit = {
   }
 
   (Os.slashDir / "menhir.cmd").slash(ISZ())
-  (Os.slashDir / "coq.cmd").slash(ISZ())
+  (Os.slashDir / "rocq.cmd").slash(ISZ())
   compCert(opamDir)
 
   ver.writeOver(compCertVersion)

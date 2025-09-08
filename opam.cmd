@@ -57,7 +57,7 @@ def install(platformDir: Os.Path, opamSuffix: String): Unit = {
   val ver = platformDir / ".opam.ver"
   val oVer = s"$opamVersion-$ocamlVersion-$duneVersion"
 
-  if (ver.exists && ver.read == oVer) {
+  if (opamDir.exists && ver.exists && ver.read == oVer) {
     return
   }
 
@@ -71,6 +71,8 @@ def install(platformDir: Os.Path, opamSuffix: String): Unit = {
   (platformDir / ".coqide.ver").removeAll()
   (platformDir / ".compcert.ver").removeAll()
   (platformDir / ".menhir.ver").removeAll()
+  (platformDir / ".rocq.ver").removeAll()
+  (platformDir / ".rocqide.ver").removeAll()
 
   println(s"OPAM is installed")
 }
