@@ -74,7 +74,7 @@ def linux(isArm: B): Unit = {
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-jdk-${graalVersion}_linux-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-jdk-${jdkVersion}_linux-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
@@ -107,7 +107,7 @@ def win(): Unit = {
   }
 
   val arch = "x64"
-  val bundle = s"graalvm-jdk-${graalVersion}_windows-${arch}_bin.zip"
+  val bundle = s"graalvm-jdk-${jdkVersion}_windows-${arch}_bin.zip"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
