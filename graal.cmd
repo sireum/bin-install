@@ -11,8 +11,8 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val jdkVersion = "24"
-val graalVersion = "24.0.2"
+val jdkVersion = "25"
+val graalVersion = "25.0.0"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
@@ -27,7 +27,7 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 }
 
 def url: String = {
-  return s"https://download.oracle.com/graalvm/$jdkVersion/archive"
+  return s"https://download.oracle.com/graalvm/$jdkVersion/latest"
 }
 
 def mac(isArm: B): Unit = {
@@ -41,7 +41,7 @@ def mac(isArm: B): Unit = {
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-jdk-${graalVersion}_macos-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-jdk-${jdkVersion}_macos-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
   if (!cache.exists) {
     cache.up.mkdirAll()
