@@ -11,8 +11,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val jdkVersion = "25"
-val graalVersion = "25.0.0"
+val graalVersion = "25.0.1"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
@@ -27,25 +26,26 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 }
 
 def url: String = {
-  return s"https://download.oracle.com/graalvm/$jdkVersion/latest"
+  return  s"https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-$graalVersion"
 }
 
 def mac(isArm: B): Unit = {
   val platformDir = homeBin / "mac"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$jdkVersion-$graalVersion"
+  val version = s"$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-jdk-${jdkVersion}_macos-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-community-jdk-${graalVersion}_macos-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    println(s"Downloading Graal $graalVersion ...")
+    println(s"$url/$bundle")
     cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
@@ -53,7 +53,7 @@ def mac(isArm: B): Unit = {
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
     (p / "Contents" / "Home").moveTo(graalDir)
     p.removeAll()
   }
@@ -67,19 +67,19 @@ def linux(isArm: B): Unit = {
   val platformDir: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$jdkVersion-$graalVersion"
+  val version = s"$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch: String = if (isArm) "aarch64" else "x64"
-  val bundle = s"graalvm-jdk-${jdkVersion}_linux-${arch}_bin.tar.gz"
+  val bundle = s"graalvm-community-jdk-${graalVersion}_linux-${arch}_bin.tar.gz"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    println(s"Downloading Graal $graalVersion ...")
     cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
@@ -87,7 +87,7 @@ def linux(isArm: B): Unit = {
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
     p.moveTo(graalDir)
   }
 
@@ -100,19 +100,19 @@ def win(): Unit = {
   val platformDir = homeBin / "win"
   val graalDir = platformDir / "graal"
   val ver = graalDir / "VER"
-  val version = s"$jdkVersion-$graalVersion"
+  val version = s"$graalVersion"
 
   if (ver.exists && ver.read == version) {
     return
   }
 
   val arch = "x64"
-  val bundle = s"graalvm-jdk-${jdkVersion}_windows-${arch}_bin.zip"
+  val bundle = s"graalvm-community-jdk-${graalVersion}_windows-${arch}_bin.zip"
   val cache = cacheDir / bundle
 
   if (!cache.exists) {
     cache.up.mkdirAll()
-    println(s"Downloading Oracle GraalVM $graalVersion ...")
+    println(s"Downloading Graal $graalVersion ...")
     cache.downloadFrom(s"$url/$bundle")
   }
   if (graalDir.exists) {
@@ -120,7 +120,7 @@ def win(): Unit = {
   }
   println(s"Extracting $cache ...")
   cache.unzipTo(platformDir)
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-jdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
     p.moveTo(graalDir)
   }
 
@@ -158,4 +158,3 @@ if (Os.cliArgs.isEmpty) {
     platform(p)
   }
 }
-
