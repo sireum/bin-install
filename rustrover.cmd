@@ -16,7 +16,7 @@ val url = s"https://download.jetbrains.com/rustrover"
 
 val homeBin = Os.slashDir.up.canon
 val home = homeBin.up.canon
-val rustRoverVersion = "2025.2.4"
+val rustRoverVersion = "2025.2.4.1"
 val plugins = HashSSet.empty[String] ++ ISZ[String]("rust", "toml")
 val init = Init(home, Os.kind, Sireum.versions)
 val rustRoverInstallVersion: String = st"$rustRoverVersion-${(for (pid <- plugins.elements) yield init.distroPlugins.get(pid).get.version, "-")}".render
