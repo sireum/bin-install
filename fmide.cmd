@@ -53,7 +53,7 @@ import Cli._
           |    --awas               AWAS version (expects a string; default is
           |                           "1.2025.09161533.4336a133")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
-          |                           "1.2025.11041321.4ee73dec")
+          |                           "1.2025.11101714.aaeb57a0")
           |    --hamr               Sireum HAMR version (expects a string; default is
           |                           "1.2025.09161533.4336a133")
           |    --agree              AGREE version (expects a string; default is "2.11.2")
@@ -76,7 +76,7 @@ import Cli._
           |    --verbose+           Increased verbose output""".render
 
     var awas: Option[String] = Some("1.2025.09161533.4336a133")
-    var gumbo: Option[String] = Some("1.2025.11041321.4ee73dec")
+    var gumbo: Option[String] = Some("1.2025.11101714.aaeb57a0")
     var hamr: Option[String] = Some("1.2025.09161533.4336a133")
     var agree: Option[String] = Some("2.11.2")
     var briefcase: Option[String] = Some("0.9.2")
