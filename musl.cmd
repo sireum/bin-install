@@ -50,7 +50,7 @@ def install(): Unit = {
 
   if (!zlibBundle.exists) {
     println("Please wait while downloading zlib ...")
-    zlibBundle.downloadFrom(s"https://github.com/sireum/rolling/releases/download/misc/zlib-$version.tar.gz")
+    zlibBundle.downloadFrom(s"https://github.com/sireum/rolling/releases/download/misc/zlib-$zlibVersion.tar.gz")
     println()
   }
 
