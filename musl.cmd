@@ -44,13 +44,13 @@ def install(): Unit = {
 
   if (!bundle.exists) {
     println("Please wait while downloading musl-libc ...")
-    bundle.downloadFrom(s"https://musl.libc.org/releases/musl-$version.tar.gz")
+    bundle.downloadFrom(s"https://github.com/sireum/rolling/releases/download/misc/musl-$version.tar.gz")
     println()
   }
 
   if (!zlibBundle.exists) {
     println("Please wait while downloading zlib ...")
-    zlibBundle.downloadFrom(s"https://www.zlib.net/zlib-$zlibVersion.tar.gz")
+    zlibBundle.downloadFrom(s"https://github.com/sireum/rolling/releases/download/misc/zlib-$version.tar.gz")
     println()
   }
 
