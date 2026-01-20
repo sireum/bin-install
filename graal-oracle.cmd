@@ -11,7 +11,8 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val jdkVersion = "25"
+val jdkVersion = "25.0.2"
+val jdkMajorVersion = ops.StringOps(jdkVersion).substring(0, ops.StringOps(jdkVersion).indexOf('.'))
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
@@ -26,12 +27,19 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
 }
 
 def url: String = {
-  return s"https://download.oracle.com/graalvm/$jdkVersion/latest"
+  return s"https://download.oracle.com/graalvm/$jdkMajorVersion/archive"
 }
 
 def mac(isArm: B): Unit = {
   val platformDir = homeBin / "mac"
   val graalDir = platformDir / "graal"
+
+  val ver = graalDir / "VER"
+  val version = s"$jdkVersion"
+
+  if (ver.exists && ver.read == version) {
+    return
+  }
 
   val arch: String = if (isArm) "aarch64" else "x64"
   val bundle = s"graalvm-jdk-${jdkVersion}_macos-${arch}_bin.tar.gz"
@@ -53,12 +61,21 @@ def mac(isArm: B): Unit = {
 
   cache.removeAll()
 
+  ver.writeOver(version)
+
   println("... done!")
 }
 
 def linux(isArm: B): Unit = {
   val platformDir: Os.Path = if (isArm) homeBin / "linux" / "arm" else homeBin / "linux"
   val graalDir = platformDir / "graal"
+
+  val ver = graalDir / "VER"
+  val version = s"$jdkVersion"
+
+  if (ver.exists && ver.read == version) {
+    return
+  }
 
   val arch: String = if (isArm) "aarch64" else "x64"
   val bundle = s"graalvm-jdk-${jdkVersion}_linux-${arch}_bin.tar.gz"
@@ -80,14 +97,23 @@ def linux(isArm: B): Unit = {
 
   cache.removeAll()
 
+  ver.writeOver(version)
+
   println("... done!")
 }
 
-def win(): Unit = {
+def win(isArm: B): Unit = {
   val platformDir = homeBin / "win"
   val graalDir = platformDir / "graal"
 
-  val arch = "x64"
+  val ver = graalDir / "VER"
+  val version = s"$jdkVersion"
+
+  if (ver.exists && ver.read == version) {
+    return
+  }
+
+  val arch: String = if (isArm) "aarch64" else "x64"
   val bundle = s"graalvm-jdk-${jdkVersion}_windows-${arch}_bin.zip"
   val cache = cacheDir / bundle
 
@@ -107,17 +133,17 @@ def win(): Unit = {
 
   cache.removeAll()
 
+  ver.writeOver(version)
+
   println("... done!")
 }
 
 def platform(p: String): Unit = {
   p match {
-    case string"mac" =>
-      val isArm: B = ops.StringOps(proc"uname -m".runCheck().out).trim == "arm64"
-      mac(isArm)
+    case string"mac" => mac(Os.isMacArm)
     case string"linux" => linux(F)
     case string"linux/arm" => linux(T)
-    case string"win" => win()
+    case string"win" => win(Os.isWinArm)
     case string"-h" => usage()
     case _ =>
       eprintln("Unsupported platform")
