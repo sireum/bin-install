@@ -18,7 +18,7 @@ val fmideTool: Tool = Tool(
     Opt(name = "awas", longKey = "awas", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("1.2025.09161533.4336a133")), description = "AWAS version"),
     Opt(name = "gumbo", longKey = "gumbo", shortKey = None(),
-      tpe = Type.Str(sep = None(), default = Some("1.2026.02030957.27955316")), description = "Sireum GUMBO version"),
+      tpe = Type.Str(sep = None(), default = Some("1.2026.02111228.64318e46")), description = "Sireum GUMBO version"),
     Opt(name = "hamr", longKey = "hamr", shortKey = None(),
       tpe = Type.Str(sep = None(), default = Some("1.2025.09161533.4336a133")), description = "Sireum HAMR version"),
     Opt(name = "agree", longKey = "agree", shortKey = None(),
