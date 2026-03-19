@@ -383,66 +383,73 @@ val osateVersion = option.osate.get
 
 @datatype class Feature(val id: String,
                         val url: String,
-                        val defaultVersion: String,
+                        val defaultVersion: Option[String],
                         val releaseSuffix: Option[String]) {
 
   def phantomArg: String = {
-    return st"$id=$url$releaseSuffix/$defaultVersion".render
+    val vOpt: String = if (defaultVersion.nonEmpty) s"/${defaultVersion.get}" else ""
+    return st"$id=$url$releaseSuffix$vOpt".render
   }
 }
 
 val agree = Feature(
   "com.rockwellcollins.atc.agree.feature.feature.group",
   "https://raw.githubusercontent.com/loonwerks/AGREE-Updates/master",
-  option.agree.get,
+  option.agree,
   Some("/releases"))
 
 val resolute = Feature(
   "com.rockwellcollins.atc.resolute.feature.feature.group",
   "https://raw.githubusercontent.com/loonwerks/Resolute-Updates/master",
-  option.resolute.get,
+  option.resolute,
   Some("/releases"))
 
 val briefcase = Feature(
   "com.collins.trustedsystems.briefcase.feature.feature.group",
   s"https://download.eclipse.org/releases/$eclipseVersion,https://raw.githubusercontent.com/loonwerks/BriefCASE-Updates/master",
-  option.briefcase.get,
+  option.briefcase,
   Some("/releases"))
 
 val sireumPlugin = Feature(
   "org.sireum.aadl.osate.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/osate-update-site/master",
-  option.hamr.get,
+  option.hamr,
   None())
 
 val awas = Feature(
   "org.sireum.aadl.osate.awas.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/osate-update-site/master",
-  option.awas.get,
+  option.awas,
   None())
 
 val cli = Feature(
   "org.sireum.aadl.osate.cli.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/osate-update-site/master",
-  option.hamr.get,
+  option.hamr,
   None())
 
 val hamr = Feature(
   "org.sireum.aadl.osate.hamr.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/osate-update-site/master",
-  option.hamr.get,
+  option.hamr,
   None())
 
 val gumbo = Feature(
   "org.sireum.aadl.gumbo.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/aadl-gumbo-update-site/master",
-  option.gumbo.get,
+  option.gumbo,
   None())
 
 val gumbo2Air = Feature(
   "org.sireum.aadl.osate.gumbo2air.feature.feature.group",
   "https://raw.githubusercontent.com/sireum/aadl-gumbo-update-site/master",
-  option.gumbo.get,
+  option.gumbo,
+  None())
+
+val justJRE = Feature(
+  "org.eclipse.justj.openjdk.hotspot.jre.full.stripped.feature.group",
+  "https://download.eclipse.org/justj/jres/21/updates/release/latest",
+  None(),
   None())
 
 val features: ISZ[Feature] = ISZ(
@@ -454,7 +461,8 @@ val features: ISZ[Feature] = ISZ(
   sireumPlugin,
   briefcase,
   resolute,
-  agree)
+  agree,
+  justJRE)
 
 val fmideDir: Os.Path =
   if(option.existingInstall.nonEmpty) {
