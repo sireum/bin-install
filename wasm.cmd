@@ -11,12 +11,14 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val wasmtimeVersion = "42.0.1"
+val wasmtimeVersion = "43.0.0"
 val wasmedgeVersion = "0.16.1"
 val wasmerVersion = "7.0.1"
 val wabtVersion = "1.0.39"
 val binaryenVersion = "126"
 val wasmToolsVersion = "1.245.1"
+val wasiSdkVersion = "32"
+val wasiSdkMinorVersion = "0"
 
 val homeBin: Os.Path = Os.slashDir.up.canon
 
@@ -121,6 +123,14 @@ def mac(isArm: B): Unit = {
   install(platformDir = platformDir, name = "wasm-tools", version = wasmToolsVersion,
     url = s"https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasmToolsVersion/$wasmToolsBundle",
     bundle = wasmToolsBundle, prefix = s"wasm-tools-$wasmToolsVersion", isZip = F)
+
+  // wasi-sdk
+  val wasiSdkArch: String = if (isArm) "arm64" else "x86_64"
+  val wasiSdkVer = s"$wasiSdkVersion.$wasiSdkMinorVersion"
+  val wasiSdkBundle = s"wasi-sdk-$wasiSdkVer-$wasiSdkArch-macos.tar.gz"
+  install(platformDir = platformDir, name = "wasi-sdk", version = wasiSdkVer,
+    url = s"https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasiSdkVersion/$wasiSdkBundle",
+    bundle = wasiSdkBundle, prefix = s"wasi-sdk-$wasiSdkVer", isZip = F)
 }
 
 def linux(isArm: B): Unit = {
@@ -167,6 +177,14 @@ def linux(isArm: B): Unit = {
   install(platformDir = platformDir, name = "wasm-tools", version = wasmToolsVersion,
     url = s"https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasmToolsVersion/$wasmToolsBundle",
     bundle = wasmToolsBundle, prefix = s"wasm-tools-$wasmToolsVersion", isZip = F)
+
+  // wasi-sdk
+  val wasiSdkArch: String = if (isArm) "arm64" else "x86_64"
+  val wasiSdkVer = s"$wasiSdkVersion.$wasiSdkMinorVersion"
+  val wasiSdkBundle = s"wasi-sdk-$wasiSdkVer-$wasiSdkArch-linux.tar.gz"
+  install(platformDir = platformDir, name = "wasi-sdk", version = wasiSdkVer,
+    url = s"https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasiSdkVersion/$wasiSdkBundle",
+    bundle = wasiSdkBundle, prefix = s"wasi-sdk-$wasiSdkVer", isZip = F)
 }
 
 def win(): Unit = {
@@ -207,6 +225,13 @@ def win(): Unit = {
   install(platformDir = platformDir, name = "wasm-tools", version = wasmToolsVersion,
     url = s"https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasmToolsVersion/$wasmToolsBundle",
     bundle = wasmToolsBundle, prefix = s"wasm-tools-$wasmToolsVersion", isZip = T)
+
+  // wasi-sdk
+  val wasiSdkVer = s"$wasiSdkVersion.$wasiSdkMinorVersion"
+  val wasiSdkBundle = s"wasi-sdk-$wasiSdkVer-x86_64-windows.tar.gz"
+  install(platformDir = platformDir, name = "wasi-sdk", version = wasiSdkVer,
+    url = s"https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasiSdkVersion/$wasiSdkBundle",
+    bundle = wasiSdkBundle, prefix = s"wasi-sdk-$wasiSdkVer", isZip = F)
 }
 
 def platform(p: String): Unit = {
