@@ -11,7 +11,7 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val wasmtimeVersion = "43.0.0"
+val wasmtimeVersion = "44.0.0"
 val wasmedgeVersion = "0.16.1"
 val wasmerVersion = "7.0.1"
 val wabtVersion = "1.0.39"
