@@ -11,12 +11,12 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val wasmtimeVersion = "44.0.0"
-val wasmedgeVersion = "0.16.1"
-val wasmerVersion = "7.0.1"
-val wabtVersion = "1.0.39"
-val binaryenVersion = "126"
-val wasmToolsVersion = "1.245.1"
+val wasmtimeVersion = "44.0.1"
+val wasmedgeVersion = "0.16.2"
+val wasmerVersion = "7.1.0"
+val wabtVersion = "1.0.40"
+val binaryenVersion = "129"
+val wasmToolsVersion = "1.248.0"
 val wasiSdkVersion = "32"
 val wasiSdkMinorVersion = "0"
 
@@ -93,12 +93,19 @@ def mac(isArm: B): Unit = {
     url = s"https://github.com/WasmEdge/WasmEdge/releases/download/$wasmedgeVersion/$wasmedgeBundle",
     bundle = wasmedgeBundle, prefix = "", isZip = F)
 
-  // wasmer
+  // wasmer — GitHub release assets don't include the version in the
+  // filename (only in the directory path), so we embed the version in
+  // the local cache name to prevent stale-cache reuse across version
+  // bumps.  Without this, a previously-downloaded archive gets silently
+  // reused when wasmerVersion is bumped, and the install function then
+  // stamps VER with the new version even though the binary inside is
+  // still the old one.
   val wasmerArch: String = if (isArm) "arm64" else "amd64"
   val wasmerBundle = s"wasmer-darwin-$wasmerArch.tar.gz"
+  val wasmerCacheBundle = s"wasmer-$wasmerVersion-darwin-$wasmerArch.tar.gz"
   install(platformDir = platformDir, name = "wasmer", version = wasmerVersion,
     url = s"https://github.com/wasmerio/wasmer/releases/download/v$wasmerVersion/$wasmerBundle",
-    bundle = wasmerBundle, prefix = "", isZip = F)
+    bundle = wasmerCacheBundle, prefix = "", isZip = F)
 
   // wabt (arm64 only — no macOS x86_64 binaries since v1.0.37)
   if (isArm) {
@@ -150,12 +157,14 @@ def linux(isArm: B): Unit = {
     url = s"https://github.com/WasmEdge/WasmEdge/releases/download/$wasmedgeVersion/$wasmedgeBundle",
     bundle = wasmedgeBundle, prefix = "", isZip = F)
 
-  // wasmer
+  // wasmer — see macOS comment above; same version-less remote-asset
+  // naming, so we embed the version in the local cache name.
   val wasmerSuffix: String = if (isArm) "linux-aarch64" else "linux-amd64"
   val wasmerBundle = s"wasmer-$wasmerSuffix.tar.gz"
+  val wasmerCacheBundle = s"wasmer-$wasmerVersion-$wasmerSuffix.tar.gz"
   install(platformDir = platformDir, name = "wasmer", version = wasmerVersion,
     url = s"https://github.com/wasmerio/wasmer/releases/download/v$wasmerVersion/$wasmerBundle",
-    bundle = wasmerBundle, prefix = "", isZip = F)
+    bundle = wasmerCacheBundle, prefix = "", isZip = F)
 
   // wabt
   val wabtArch: String = if (isArm) "arm64" else "x64"
@@ -202,11 +211,13 @@ def win(): Unit = {
     url = s"https://github.com/WasmEdge/WasmEdge/releases/download/$wasmedgeVersion/$wasmedgeBundle",
     bundle = wasmedgeBundle, prefix = "", isZip = T)
 
-  // wasmer
+  // wasmer — see macOS comment above; same version-less remote-asset
+  // naming, so we embed the version in the local cache name.
   val wasmerBundle = "wasmer-windows-amd64.tar.gz"
+  val wasmerCacheBundle = s"wasmer-$wasmerVersion-windows-amd64.tar.gz"
   install(platformDir = platformDir, name = "wasmer", version = wasmerVersion,
     url = s"https://github.com/wasmerio/wasmer/releases/download/v$wasmerVersion/$wasmerBundle",
-    bundle = wasmerBundle, prefix = "", isZip = F)
+    bundle = wasmerCacheBundle, prefix = "", isZip = F)
 
   // wabt
   val wabtBundle = s"wabt-$wabtVersion-windows-x64.tar.gz"
