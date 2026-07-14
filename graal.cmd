@@ -11,7 +11,8 @@ exit /B %errorlevel%
 // #Sireum
 import org.sireum._
 
-val graalVersion = "25.0.2"
+val graalReleaseVersion = "25.1.3"
+val graalVersion = "25i1-25.0.3"
 
 def usage(): Unit = {
   println("Usage: ( mac | linux | linux/arm | win )*")
@@ -25,8 +26,9 @@ val cacheDir: Os.Path = Os.env("SIREUM_CACHE") match {
   case _ => Os.home / "Downloads" / "sireum"
 }
 
+//https://github.com/graalvm/graalvm-ce-builds/releases/download/graal-25.1.3/graalvm-community-jdk-25i1-25.0.3_macos-aarch64_bin.tar.gz
 def url: String = {
-  return  s"https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-$graalVersion"
+  return  s"https://github.com/graalvm/graalvm-ce-builds/releases/download/graal-$graalReleaseVersion"
 }
 
 def mac(isArm: B): Unit = {
@@ -53,7 +55,7 @@ def mac(isArm: B): Unit = {
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community")) {
     (p / "Contents" / "Home").moveTo(graalDir)
     p.removeAll()
   }
@@ -87,7 +89,7 @@ def linux(isArm: B): Unit = {
   }
   println(s"Extracting $cache ...")
   Os.proc(ISZ("tar", "xfz", cache.string)).at(platformDir).console.runCheck()
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community")) {
     p.moveTo(graalDir)
   }
 
@@ -120,7 +122,7 @@ def win(): Unit = {
   }
   println(s"Extracting $cache ...")
   cache.unzipTo(platformDir)
-  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community-openjdk")) {
+  for (p <- platformDir.list if ops.StringOps(p.name).startsWith("graalvm-community")) {
     p.moveTo(graalDir)
   }
 
