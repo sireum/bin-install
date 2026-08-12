@@ -86,6 +86,14 @@ def mac(isArm: B): Unit = {
     url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeBundle",
     bundle = wasmtimeBundle, prefix = "wasmtime-v", isZip = F)
 
+  // Matching C API for V's pinned Wasmtime host embedding.  Keep it as a
+  // separately versioned sibling so reinstalling the CLI cannot remove
+  // include/lib from the C API payload.
+  val wasmtimeCApiBundle = s"wasmtime-v$wasmtimeVersion-$wasmtimeArch-macos-c-api.tar.xz"
+  install(platformDir = platformDir, name = "wasmtime-c-api", version = wasmtimeVersion,
+    url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeCApiBundle",
+    bundle = wasmtimeCApiBundle, prefix = "wasmtime-v", isZip = F)
+
   // wasmedge (flat archive — no top-level directory)
   val wasmedgeArch: String = if (isArm) "arm64" else "x86_64"
   val wasmedgeBundle = s"WasmEdge-$wasmedgeVersion-darwin_$wasmedgeArch.tar.gz"
@@ -150,6 +158,14 @@ def linux(isArm: B): Unit = {
     url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeBundle",
     bundle = wasmtimeBundle, prefix = "wasmtime-v", isZip = F)
 
+  // Matching C API for V's pinned Wasmtime host embedding.  Keep it as a
+  // separately versioned sibling so reinstalling the CLI cannot remove
+  // include/lib from the C API payload.
+  val wasmtimeCApiBundle = s"wasmtime-v$wasmtimeVersion-$wasmtimeArch-linux-c-api.tar.xz"
+  install(platformDir = platformDir, name = "wasmtime-c-api", version = wasmtimeVersion,
+    url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeCApiBundle",
+    bundle = wasmtimeCApiBundle, prefix = "wasmtime-v", isZip = F)
+
   // wasmedge (flat archive — no top-level directory)
   val wasmedgeArch: String = if (isArm) "aarch64" else "x86_64"
   val wasmedgeBundle = s"WasmEdge-$wasmedgeVersion-manylinux_2_28_$wasmedgeArch.tar.gz"
@@ -204,6 +220,14 @@ def win(): Unit = {
   install(platformDir = platformDir, name = "wasmtime", version = wasmtimeVersion,
     url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeBundle",
     bundle = wasmtimeBundle, prefix = "wasmtime-v", isZip = T)
+
+  // Matching C API for V's pinned Wasmtime host embedding.  Keep it as a
+  // separately versioned sibling so reinstalling the CLI cannot remove
+  // include/lib from the C API payload.
+  val wasmtimeCApiBundle = s"wasmtime-v$wasmtimeVersion-x86_64-windows-c-api.zip"
+  install(platformDir = platformDir, name = "wasmtime-c-api", version = wasmtimeVersion,
+    url = s"https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/$wasmtimeCApiBundle",
+    bundle = wasmtimeCApiBundle, prefix = "wasmtime-v", isZip = T)
 
   // wasmedge (flat archive — no top-level directory)
   val wasmedgeBundle = s"WasmEdge-$wasmedgeVersion-windows.zip"
