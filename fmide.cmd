@@ -53,7 +53,7 @@ import Cli._
           |    --awas               AWAS version (expects a string; default is
           |                           "1.2026.07131214.177108b3")
           |    --gumbo              Sireum GUMBO version (expects a string; default is
-          |                           "1.2026.06240925.18efbba7")
+          |                           "1.2026.09042016.febee0d9")
           |    --hamr               Sireum HAMR version (expects a string; default is
           |                           "1.2026.07131214.177108b3")
           |    --agree              AGREE version (expects a string; default is "2.11.2")
@@ -76,7 +76,7 @@ import Cli._
           |    --verbose+           Increased verbose output""".render
 
     var awas: Option[String] = Some("1.2026.07131214.177108b3")
-    var gumbo: Option[String] = Some("1.2026.06240925.18efbba7")
+    var gumbo: Option[String] = Some("1.2026.09042016.febee0d9")
     var hamr: Option[String] = Some("1.2026.07131214.177108b3")
     var agree: Option[String] = Some("2.11.2")
     var briefcase: Option[String] = Some("0.9.2")
@@ -239,6 +239,12 @@ import Cli._
     return Some(tokenizeH(arg, sep, removeWhitespace))
   }
 
+  // Separator handling: a doubled separator (two adjacent `sep`) decodes to one
+  // literal `sep`; a lone `sep` is an element boundary. This lets a value embed a
+  // literal separator, but the mapping is NOT an injective list codec -- a boundary
+  // adjacent to a leading/trailing literal separator is ambiguous (left-greedy decode
+  // wins) and a trailing empty element is suppressed. Callers that must embed literal
+  // separators should keep each value one self-delimiting token (as a `-D...=` option does).
   def tokenizeH(arg: String, sep: C, removeWhitespace: B): ISZ[String] = {
     val argCis = conversions.String.toCis(arg)
     var r = ISZ[String]()
@@ -247,8 +253,14 @@ import Cli._
     while (j < argCis.size) {
       val c = argCis(j)
       if (c == sep) {
-        r = r :+ conversions.String.fromCis(cis)
-        cis = ISZ[C]()
+        if (j + 1 < argCis.size && argCis(j + 1) == sep) {
+          cis = cis :+ sep
+          j = j + 2
+        } else {
+          r = r :+ conversions.String.fromCis(cis)
+          cis = ISZ[C]()
+          j = j + 1
+        }
       } else {
         val allowed: B = c match {
           case c"\n" => !removeWhitespace
@@ -260,8 +272,8 @@ import Cli._
         if (allowed) {
           cis = cis :+ c
         }
+        j = j + 1
       }
-      j = j + 1
     }
     if (cis.size > 0) {
       r = r :+ conversions.String.fromCis(cis)
